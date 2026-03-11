@@ -46,6 +46,7 @@ en:
     regions: Regions
     drawings: Drawings
     settings: Settings
+    dimensions: Dimensions
     add_layer: Add a layer
     add_region: Add a region
     clear_all: Clear all
