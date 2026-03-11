@@ -48,11 +48,9 @@ Update the system and install Docker:
 # Update system packages
 apt update && apt upgrade -y
 
-# Install Docker using the official script
+# Install Docker and required tools
 curl -fsSL https://get.docker.com | sh
-
-# Install Docker Compose plugin
-apt install docker-compose-plugin -y
+apt install docker-compose-plugin unzip curl -y
 
 # Verify installation
 docker --version
@@ -73,7 +71,16 @@ cp .env.example .env
 nano .env
 ```
 
-## Step 4: Launch Services
+## Step 4: Download Natural Earth Data
+
+The map shapefiles need to be downloaded before starting:
+
+```bash
+# Download Natural Earth shapefiles (~150 MB)
+bash scripts/download-naturalearth.sh ./mapserver/maps
+```
+
+## Step 5: Launch Services
 
 ```bash
 # Build and start all services
@@ -85,10 +92,9 @@ docker compose logs -f
 
 The first startup will take several minutes as it:
 - Builds the Docker images
-- Downloads Natural Earth data (~700 MB)
 - Initializes the database
 
-## Step 5: Verify Installation
+## Step 6: Verify Installation
 
 Once the logs show the services are ready:
 
@@ -102,7 +108,7 @@ curl http://localhost/health
 
 Access the application at `http://YOUR_SERVER_IP/`
 
-## Step 6: Configure Firewall (Recommended)
+## Step 7: Configure Firewall (Recommended)
 
 ```bash
 # Install UFW if not present
