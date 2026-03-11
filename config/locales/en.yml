@@ -122,16 +122,16 @@ en:
   # Options
   options:
     title: Options
-    graticules: graticules (grid)
+    graticules: graticules
     fixed: fixed
     hide_labels: hide labels
     line_thickness: Line Thickness
     projection: Projection
     longitude_origin: longitude of natural origin
     zoom_hint: zoom prior to setting projection
-    legend: Legend
-    scalebar: Scalebar
-    border: Border
+    legend: legend
+    scalebar: scalebar
+    border: border
 
   # Projections
   projections:

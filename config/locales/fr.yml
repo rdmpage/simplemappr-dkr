@@ -129,9 +129,9 @@ fr:
     projection: Projection
     longitude_origin: longitude d'origine naturelle
     zoom_hint: zoomer avant de fixer la projection
-    legend: Légende
-    scalebar: Échelle
-    border: Bordure
+    legend: légende
+    scalebar: échelle
+    border: bordure
 
   # Projections
   projections:
