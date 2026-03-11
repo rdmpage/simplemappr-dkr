@@ -1,0 +1,278 @@
+# SimpleMappr English Locale
+# Copyright (C) 2024 David P. Shorthouse
+# Based on original SimpleMappr translations
+
+en:
+  language: English
+  locale: en_US
+
+  # General/Common
+  general:
+    app_name: SimpleMappr
+    tagline: A point map web application for quality publications and presentations
+    keywords: publication,presentation,map,georeference
+    sign_in: Sign In
+    sign_out: Sign Out
+    save: Save
+    cancel: Cancel
+    delete: Delete
+    download: Download
+    preview: Preview
+    apply: Apply
+    clear: Clear
+    remove: Remove
+    loading: Loading...
+    warning: Warning
+    error: Error
+    success: Success
+    yes: "Yes"
+    no: "No"
+
+  # Navigation
+  nav:
+    help: Help
+    about: About
+    feedback: Feedback
+    api: API
+    my_maps: My Maps
+    all_maps: All Maps
+    users: Users
+    administration: Administration
+
+  # Editor interface
+  editor:
+    title: Map Editor
+    point_data: Point Data
+    regions: Regions
+    drawings: Drawings
+    settings: Settings
+    add_layer: Add a layer
+    add_region: Add a region
+    clear_all: Clear all
+    layer: "Layer %{num}"
+    region: "Region %{num}"
+    drawing: "Drawing %{num}"
+
+  # Point data
+  points:
+    coordinates: Coordinates
+    coordinates_help: Type geographic coordinates on separate lines in decimal degrees (DD) or DD°MM'SS" as latitude,longitude separated by a space (DD only), comma, or semicolon
+    coordinates_placeholder: "Enter coordinates, one per line:\n45.5, -75.5\n46.2, -74.8\n\nOr: 45°30'N, 75°30'W"
+    examples: examples
+    legend: Legend
+    legend_placeholder: "e.g., Species A"
+    shape: Shape
+    size: Size
+    color: Color
+    shadow: Shadow
+
+  # Shapes
+  shapes:
+    select: "--select--"
+    plus: plus
+    cross: cross
+    asterisk: asterisk
+    solid: solid
+    circle_solid: circle (s)
+    star_solid: star (s)
+    square_solid: square (s)
+    triangle_solid: triangle (s)
+    hexagon_solid: hexagon (s)
+    open: open
+    circle_open: circle (o)
+    star_open: star (o)
+    square_open: square (o)
+    triangle_open: triangle (o)
+    hexagon_open: hexagon (o)
+
+  # Regions
+  regions_tab:
+    help: "Type countries as Mexico, Venezuela AND/OR bracket pipe- or space-separated State/Province codes prefixed by 3-letter ISO country code e.g. USA[VA], CAN[AB ON]."
+    codes: codes
+    border: Border
+
+  # Layers
+  layers:
+    title: Layers
+    countries: Countries
+    states_provinces: State/Provinces
+    lakes_outline: lakes (outline)
+    lakes_greyscale: lakes (greyscale)
+    lakes_blue: lakes (blue)
+    rivers: rivers
+    oceans_greyscale: oceans (greyscale)
+    oceans_blue: oceans (blue)
+    relief: relief
+    relief_greyscale: relief (greyscale)
+    biodiv_hotspots: biodiv. hotspots
+
+  # Labels
+  labels:
+    title: Labels
+    countries: Countries
+    states_provinces: State/Provinces
+    lakes: lakes
+    rivers: rivers
+    places: places
+    physical: physical
+    marine: marine
+
+  # Options
+  options:
+    title: Options
+    graticules: graticules (grid)
+    fixed: fixed
+    hide_labels: hide labels
+    line_thickness: Line Thickness
+    projection: Projection
+    longitude_origin: longitude of natural origin
+    zoom_hint: zoom prior to setting projection
+    legend: Legend
+    scalebar: Scalebar
+    border: Border
+
+  # Projections
+  projections:
+    geographic: Geographic (WGS84)
+    na_lambert: North America Lambert
+    sa_lambert: South America Lambert
+    europe_lambert: Europe Lambert
+    asia_lambert: Asia Lambert
+    africa_lambert: Africa Lambert
+    australia_lambert: Australia Lambert
+    north_pole: North Pole Azimuthal
+    south_pole: South Pole Azimuthal
+    world_robinson: World Robinson
+    world_mercator: World Mercator
+
+  # Toolbar
+  toolbar:
+    zoom_in: zoom in
+    zoom_out: zoom out
+    crop: crop
+    fill_regions: fill regions
+    undo: undo
+    redo: redo
+    refresh: refresh
+    rebuild: rebuild
+    save: save
+    embed: embed
+    download: download
+    pan_up: pan up
+    pan_down: pan down
+    pan_left: pan left
+    pan_right: pan right
+
+  # Download dialog
+  download_dialog:
+    title: Download
+    file_name: File name
+    file_type: File type
+    dimensions: "Dimensions: %{width} x %{height}"
+    include_border: include border
+    proportional_lines: make line thickness proportional to image scale
+    embed_legend: embed legend
+    embed_scalebar: embed scalebar
+    svg_note: does not include scalebar, legend, or relief layers
+    building: Building file for download...
+    map_cropped: map will be cropped
+
+  # Save dialog
+  save_dialog:
+    title: Save Map
+    map_title: Title
+    saving: Saving...
+    error_loading: There was a problem loading your map.
+    error_saving: There was a problem saving your map.
+    missing_legend: You are missing a legend for at least one of your Point Data or Regions layers.
+
+  # Embed
+  embed:
+    title: Embed
+    legend_placeholder: legend will appear here
+    additional_params: Additional parameters
+    width_height_legend: width, height, legend
+
+  # My Maps
+  my_maps:
+    load: Load
+    share: Share
+    unshare: Unshare
+    created: Created
+    updated: Updated
+    confirm_delete: "Are you sure you want to delete %{title}?"
+    no_maps: Start by adding data on the Point Data or Regions tabs, press the Preview buttons there, then save your map from the top bar of the Preview tab.
+
+  # Help page
+  help:
+    title: Help
+    browser_note: This application makes heavy use of JavaScript. A modern browser like Chrome, Firefox, Safari, or Edge is strongly recommended.
+    preview_section: Preview
+    preview_help: Use the Preview tab to refine your eventual map export by adjusting various options, downloading the result, or saving it for later re-use (when logged in)
+    toolbar_buttons: Toolbar buttons
+    zoom_in_help: draw a zoom region on the preview
+    zoom_out_help: zoom out one step
+    crop_help: draw an expandable, square-shaped rubber band that precisely defines a cropped portion of the map you wish to appear in the exported map.
+    fill_regions_help: choose a color then draw an expandable, square-shaped rubber band to shade States/Provinces (if layer visible) or Countries. Selections are sequentially added in the Regions tab.
+    undo_help: undo the last executed action
+    redo_help: redo the last executed action
+    refresh_help: refresh the map image
+    rebuild_help: re-render the default presentation at lowest zoom and geographic projection
+    save_help: while logged in, click this icon to give your map a title and save its settings for later reuse from the My Maps tab.
+    embed_help: once a map is saved, click this icon to obtain a URL for embedding on other websites.
+    download_help: choose from a web-friendly png, high resolution tif, pptx (PowerPoint), docx (Word), kml (Google Earth) or scalable vector graphic (svg). The latter is recommended for the preparation of figures in manuscripts because it is lossless.
+    point_data_section: Point Data
+    point_data_help: Use the Point Data tab to paste coordinates as latitude, longitude either in decimal degrees or as DD°MM'SS" on separate lines and select the marker shape, size, and color.
+    coordinate_format: Coordinate format
+    coordinate_format_help: "in western hemisphere above equator 45.55, -120.25 (or 45° 33'N, 120° 15'W); in western hemisphere below equator -15.66, -65.10; eastern hemisphere above equator 64.82, 75.1"
+    example_data: Example Data Entry
+    example_na: 38,-100 (North America)
+    example_au: -25,140 (Australia)
+    pushpin_color: Pushpin color
+    pushpin_color_help: configured using the RGB color scheme and a color selector is provided. By default, "0 0 0" (black) is selected.
+    regions_section: Regions
+    regions_help: Use the Regions tab to list political regions you would like shaded and select the shade color.
+
+  # About page
+  about:
+    title: About
+    description: Create greyscale point maps suitable for reproduction on print media by copying and pasting geographic coordinates in layers, choosing pushpin styles, then downloading the result.
+    citing: Citing
+    citing_text: All versions of SimpleMappr map data found on this website are in the Public Domain. You may use the maps in any manner, including modifying the content and design, electronic dissemination, and offset printing.
+    recent_updates: Recent Updates
+    live_updates: Live Updates
+    in_the_wild: In the Wild
+    applications: Applications
+    api_usage: API Usage
+    code: Code
+    history: History
+    history_text: The first version of this application was developed by David P. Shorthouse to help participants in two Planetary Biodiversity Inventory (National Science Foundation) projects create publication-quality maps.
+    acknowledgments: Acknowledgments
+
+  # API documentation
+  api:
+    title: API Documentation
+    description: A simple, restful API may be used with Internet accessible, tab-separated text files, a collection of coordinates, or by sending files with additional parameters outlined below.
+    produces: Produces
+    base_url: Base URL
+    parameters: Parameters
+
+  # Feedback
+  feedback:
+    title: Feedback
+    description: Used SimpleMappr in a manuscript, poster, PowerPoint presentation or are you making use of the API? Please also drop a note if you have feature requests or bug reports.
+
+  # Errors
+  errors:
+    not_found: Not found
+    enable_javascript: Sorry, you must enable JavaScript to use this site.
+    data_out_of_range: Data Out of Range
+    records_out_of_range: Records Out of Range
+
+  # Health/Status
+  health:
+    status: Status
+    database: Database
+    render_service: Render Service
+    connected: connected
+    degraded: degraded

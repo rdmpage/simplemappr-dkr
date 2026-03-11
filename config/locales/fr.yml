@@ -1,0 +1,278 @@
+# SimpleMappr French Locale
+# Copyright (C) 2024 David P. Shorthouse
+# Based on original SimpleMappr translations
+
+fr:
+  language: Français
+  locale: fr_FR
+
+  # General/Common
+  general:
+    app_name: SimpleMappr
+    tagline: Créez gratuitement des cartes de répartition pour publications et présentations
+    keywords: publication,présentation,carte,géoréférencer
+    sign_in: Connecter
+    sign_out: Déconnecter
+    save: Enregistrer
+    cancel: Annuler
+    delete: Supprimer
+    download: Télécharger
+    preview: Aperçu
+    apply: Appliquer
+    clear: Effacer
+    remove: Enlever
+    loading: En train de charger...
+    warning: Attention
+    error: Erreur
+    success: Succès
+    yes: "Oui"
+    no: "Non"
+
+  # Navigation
+  nav:
+    help: Aide
+    about: À propos
+    feedback: Réactions
+    api: API
+    my_maps: Mes cartes
+    all_maps: Cartes
+    users: Usagers
+    administration: Administration
+
+  # Editor interface
+  editor:
+    title: Éditeur de cartes
+    point_data: Points de Données
+    regions: Régions
+    drawings: Dessins
+    settings: Paramètres
+    add_layer: Ajouter
+    add_region: Ajouter
+    clear_all: Effacer tous
+    layer: "Couche %{num}"
+    region: "Région %{num}"
+    drawing: "Dessin %{num}"
+
+  # Point data
+  points:
+    coordinates: Coordonnées
+    coordinates_help: Taper les coordonnées géographiques sur des lignes séparées en degrés décimaux (DD) ou DD°MM'SS" comme latitude,longitude séparés par un espace (DD seulement), une virgule ou point-virgule
+    coordinates_placeholder: "Entrer les coordonnées, une par ligne:\n45.5, -75.5\n46.2, -74.8\n\nOu: 45°30'N, 75°30'O"
+    examples: exemples
+    legend: Légende
+    legend_placeholder: "p.ex., Espèce A"
+    shape: Forme
+    size: Taille
+    color: Couleur
+    shadow: Ombre
+
+  # Shapes
+  shapes:
+    select: "--choisissez--"
+    plus: plus
+    cross: croix
+    asterisk: astérisque
+    solid: plein
+    circle_solid: cercles (p)
+    star_solid: étoiles (p)
+    square_solid: carrés (p)
+    triangle_solid: triangles (p)
+    hexagon_solid: hexagones (p)
+    open: ouvert
+    circle_open: cercles (o)
+    star_open: étoiles (o)
+    square_open: carrés (o)
+    triangle_open: triangles (o)
+    hexagon_open: hexagones (o)
+
+  # Regions
+  regions_tab:
+    help: "Taper des pays comme Mexico, Venezuela et/ou des codes pour États/Provinces séparés par des espaces et préfixé par trois lettres de code national ISO ex. USA[VA], CAN[AB ON]."
+    codes: codes
+    border: Bordure
+
+  # Layers
+  layers:
+    title: Couches
+    countries: Pays
+    states_provinces: États/Provinces
+    lakes_outline: lacs (contour)
+    lakes_greyscale: lacs (plein)
+    lakes_blue: lacs (bleu)
+    rivers: rivières
+    oceans_greyscale: océans (plein)
+    oceans_blue: océans (bleu)
+    relief: relief
+    relief_greyscale: relief (gris)
+    biodiv_hotspots: hotspot de biodiv.
+
+  # Labels
+  labels:
+    title: Étiquettes
+    countries: Pays
+    states_provinces: États/Provinces
+    lakes: lacs
+    rivers: rivières
+    places: places
+    physical: physiques
+    marine: marins
+
+  # Options
+  options:
+    title: Options
+    graticules: réticules
+    fixed: fixée
+    hide_labels: cacher étiquettes
+    line_thickness: Epaisseur des lignes
+    projection: Projection
+    longitude_origin: longitude d'origine naturelle
+    zoom_hint: zoomer avant de fixer la projection
+    legend: Légende
+    scalebar: Échelle
+    border: Bordure
+
+  # Projections
+  projections:
+    geographic: Géographique (WGS84)
+    na_lambert: Amérique du Nord Lambert
+    sa_lambert: Amérique du Sud Lambert
+    europe_lambert: Europe Lambert
+    asia_lambert: Asie Lambert
+    africa_lambert: Afrique Lambert
+    australia_lambert: Australie Lambert
+    north_pole: Pôle Nord Azimutal
+    south_pole: Pôle Sud Azimutal
+    world_robinson: Monde Robinson
+    world_mercator: Monde Mercator
+
+  # Toolbar
+  toolbar:
+    zoom_in: zoomer
+    zoom_out: dézoomer
+    crop: recadrer
+    fill_regions: remplisser
+    undo: défaire
+    redo: refaire
+    refresh: régénérer
+    rebuild: rebâtis
+    save: enregistrer
+    embed: intégrer
+    download: télécharger
+    pan_up: déplacer vers le haut
+    pan_down: déplacer vers le bas
+    pan_left: déplacer vers la gauche
+    pan_right: déplacer vers la droite
+
+  # Download dialog
+  download_dialog:
+    title: Télécharger
+    file_name: Nom du fichier
+    file_type: Type de fichier
+    dimensions: "Dimension: %{width} x %{height}"
+    include_border: inclus un cadre
+    proportional_lines: faire épaisseur des lignes proportionnelle à l'échelle de l'image
+    embed_legend: inclus une légende
+    embed_scalebar: inclus une échelle
+    svg_note: ne comprend pas la barre d'échelle, légende, ou les couches de relief
+    building: En train de construire le fichier...
+    map_cropped: la carte sera recadrée
+
+  # Save dialog
+  save_dialog:
+    title: Enregistrer la carte
+    map_title: Titre
+    saving: Enregistrer...
+    error_loading: Il y avait un problème avec votre carte.
+    error_saving: Il y avait un problème enregistrée votre carte
+    missing_legend: Il vous manque une légende pour au moins un de vos Points de Données, Régions, ou Dessins.
+
+  # Embed
+  embed:
+    title: Intégrer
+    legend_placeholder: légende apparaîtra ici
+    additional_params: Paramètres supplémentaires
+    width_height_legend: largeur, hauteur, légende
+
+  # My Maps
+  my_maps:
+    load: Charger
+    share: Partager
+    unshare: Non-partager
+    created: Crée
+    updated: Mise à jour
+    confirm_delete: "Êtes-vous sûr de vouloir supprimer %{title}?"
+    no_maps: Commencer par ajouter des données sur le Point de Données ou des Régions, appuyer sur les boutons Aperçu là, puis enregistrer votre carte dans la barre supérieure de l'onglet Aperçu.
+
+  # Help page
+  help:
+    title: Aide
+    browser_note: Cette application fait un usage intensif de JavaScript. Un navigateur moderne comme Chrome, Firefox, Safari ou Edge est fortement recommandée.
+    preview_section: Aperçu
+    preview_help: Utiliser l'onglet Aperçu pour affiner votre carte en ajustant les différentes options, télécharger le résultat, ou l'enregistrer pour réutilisation ultérieure (lorsque vous êtes connecté)
+    toolbar_buttons: Boutons
+    zoom_in_help: dessiner une région de zoom sur l'aperçu
+    zoom_out_help: dézoomer une étape
+    crop_help: dessiner une extensible, élastique en forme de carré qui définit précisément une partie recadrée de la carte que vous souhaitez voir apparaître dans la carte exportée.
+    fill_regions_help: choisissez une couleur puis tracez une extensible, élastique en forme de carré à l'ombre des États/provinces (si la couche visible) ou des pays.
+    undo_help: annuler la dernière action
+    redo_help: rétablir la dernière action
+    refresh_help: régénérer la carte
+    rebuild_help: rendre la présentation par défaut au plus bas de zoom et projection géographique
+    save_help: en étant connecté, cliquer sur cette icône pour donner votre carte un titre et enregistrer ses paramètres.
+    embed_help: une fois qu'une carte est enregistrée, cliquer sur cette icône pour obtenir une URL pour l'intégration sur d'autres sites.
+    download_help: choisir png, tif à haute résolution, pptx (PowerPoint), docx (Word), kml (Google Earth) ou scalable vector graphic (svg). Ce dernier est recommandé pour la préparation des figures dans les manuscrits.
+    point_data_section: Points de Données
+    point_data_help: Utiliser l'onglet Points de Données pour coller des coordonnées latitude, longitude en degrés décimaux ou DD°MM'SS" sur des lignes séparées et sélectionner la forme de marqueur, la taille et la couleur.
+    coordinate_format: Format de coordonnées
+    coordinate_format_help: "dans l'hémisphère occidental dessus de l'équateur 45.55, -120.25 (ou 45° 33'N, 120° 15'W); dans l'hémisphère occidental dessous de l'équateur -15.66, -65.10; hémisphère oriental dessus de l'équateur 64.82, 75.1"
+    example_data: Exemple de données
+    example_na: 38,-100 (l'Amérique du Nord)
+    example_au: -25,140 (Australie)
+    pushpin_color: Couleur du marqueur
+    pushpin_color_help: configuré en utilisant le schéma de couleurs RGB et un sélecteur de couleur est fourni. Par défaut, "0 0 0" (noir) est sélectionné.
+    regions_section: Régions
+    regions_help: Utiliser l'onglet Régions pour taper une liste des régions politiques que vous aimeriez ombragé et sélectionner la couleur d'ombre.
+
+  # About page
+  about:
+    title: À propos
+    description: Créer des cartes gratuites en copiant et collant les coordonnées géographiques en couches, en choisissant des styles punaise, puis en téléchargeant le résultat.
+    citing: Citer
+    citing_text: Toutes les versions de données cartographiques SimpleMappr trouvés sur ce site sont dans le domaine public. Vous pouvez utiliser les cartes de toute manière, y compris la modification du contenu et de la conception.
+    recent_updates: Mises à jour
+    live_updates: Mises à jour direct
+    in_the_wild: Trouvés ailleurs
+    applications: Applications
+    api_usage: Utilisation de l'API
+    code: Code
+    history: Histoire
+    history_text: La première version de cette application a été développée par David P. Shorthouse pour aider les participants dans deux inventaire de la biodiversité planétaire (National Science Foundation).
+    acknowledgments: Remerciements
+
+  # API documentation
+  api:
+    title: Documentation de l'API
+    description: Un API peut être utilisé avec des fichiers texte séparés par des tabulations, une collection de coordonnées, ou par envoyé des fichiers avec des paramètres supplémentaires décrites ci-dessous.
+    produces: Produit
+    base_url: URL de base
+    parameters: Paramètres
+
+  # Feedback
+  feedback:
+    title: Réactions
+    description: Avez-vous utilisé SimpleMappr dans un manuscrit, une affiche, une présentation PowerPoint ou avez-vous utilisé l'API? S'il vous plaît aussi écrire une note si vous avez des demandes ou de fonctionnalités des rapports de bogues.
+
+  # Errors
+  errors:
+    not_found: Non trouvé
+    enable_javascript: Désolé, vous devez activer JavaScript pour utiliser ce site.
+    data_out_of_range: Données hors de portée
+    records_out_of_range: Données hors de portée
+
+  # Health/Status
+  health:
+    status: Statut
+    database: Base de données
+    render_service: Service de rendu
+    connected: connecté
+    degraded: dégradé

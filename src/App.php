@@ -11,6 +11,15 @@ namespace SimpleMappr;
 
 class App
 {
+    private Translator $translator;
+
+    public function __construct()
+    {
+        // Initialize translator with detected or requested locale
+        $locale = Translator::detectLocale();
+        $this->translator = Translator::getInstance($locale);
+    }
+
     /**
      * Run the application
      */
@@ -22,12 +31,20 @@ class App
 
         // Simple routing for now
         switch (true) {
-            case $path === '/' || $path === '':
-                $this->handleHome();
+            case $path === '/' || $path === '' || $path === '/editor':
+                $this->handleEditor();
                 break;
 
             case $path === '/health':
                 $this->handleHealth();
+                break;
+
+            case $path === '/lang':
+                $this->handleLanguageSwitch();
+                break;
+
+            case $path === '/api/i18n':
+                $this->handleI18nApi();
                 break;
 
             case strpos($path, '/api') === 0:
@@ -44,12 +61,86 @@ class App
     }
 
     /**
+     * Handle language switch
+     */
+    private function handleLanguageSwitch(): void
+    {
+        $lang = $_GET['lang'] ?? $_POST['lang'] ?? 'en';
+
+        if (isset(Translator::SUPPORTED_LOCALES[$lang])) {
+            $this->translator->setLocaleCookie($lang);
+            $this->translator->setLocale($lang);
+        }
+
+        // Redirect back to referrer or home
+        $redirect = $_SERVER['HTTP_REFERER'] ?? '/';
+        header('Location: ' . $redirect);
+        exit;
+    }
+
+    /**
+     * API endpoint for i18n translations
+     */
+    private function handleI18nApi(): void
+    {
+        header('Content-Type: application/json');
+        header('Access-Control-Allow-Origin: *');
+        header('Cache-Control: public, max-age=3600');
+
+        $section = $_GET['section'] ?? null;
+
+        $response = [
+            'locale' => $this->translator->getLocale(),
+            'supported' => $this->translator->getSupportedLocales()
+        ];
+
+        if ($section) {
+            $response['translations'] = $this->translator->section($section);
+        } else {
+            $response['translations'] = $this->translator->all();
+        }
+
+        echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
      * Home page
      */
     private function handleHome(): void
     {
         header('Content-Type: text/html; charset=utf-8');
-        echo $this->renderTemplate('home');
+        echo $this->getHomeHtml();
+    }
+
+    /**
+     * Map editor page
+     */
+    private function handleEditor(): void
+    {
+        header('Content-Type: text/html; charset=utf-8');
+        $editorFile = ROOT . '/public/editor.html';
+        if (file_exists($editorFile)) {
+            $html = file_get_contents($editorFile);
+
+            // Inject i18n data into the page
+            $i18nScript = sprintf(
+                '<script>window.SimpleMappr = window.SimpleMappr || {}; ' .
+                'window.SimpleMappr.locale = %s; ' .
+                'window.SimpleMappr.i18n = %s; ' .
+                'window.SimpleMappr.supportedLocales = %s;</script>',
+                json_encode($this->translator->getLocale()),
+                json_encode($this->translator->all(), JSON_UNESCAPED_UNICODE),
+                json_encode($this->translator->getSupportedLocales(), JSON_UNESCAPED_UNICODE)
+            );
+
+            // Insert before </head>
+            $html = str_replace('</head>', $i18nScript . "\n</head>", $html);
+
+            echo $html;
+        } else {
+            http_response_code(500);
+            echo 'Editor not found';
+        }
     }
 
     /**
@@ -178,17 +269,32 @@ class App
     }
 
     /**
-     * Default HTML for home page
+     * HTML for home page with i18n support
      */
-    private function getDefaultHtml(): string
+    private function getHomeHtml(): string
     {
+        $t = $this->translator;
+        $locale = $t->getLocale();
+        $locales = $t->getSupportedLocales();
+
+        // Build language switcher
+        $langLinks = [];
+        foreach ($locales as $code => $info) {
+            if ($code === $locale) {
+                $langLinks[] = '<strong>' . $info['native'] . '</strong>';
+            } else {
+                $langLinks[] = '<a href="/lang?lang=' . $code . '">' . $info['native'] . '</a>';
+            }
+        }
+        $langSwitcher = implode(' | ', $langLinks);
+
         return <<<HTML
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{$locale}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SimpleMappr</title>
+    <title>{$t->t('general.app_name')}</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -200,6 +306,7 @@ class App
             padding: 2rem;
         }
         h1 { color: #2c3e50; margin-bottom: 1rem; }
+        .lang-switcher { text-align: right; margin-bottom: 1rem; font-size: 0.9rem; }
         .status { padding: 1rem; background: #e8f5e9; border-radius: 4px; margin: 1rem 0; }
         .status.loading { background: #fff3e0; }
         .status.error { background: #ffebee; }
@@ -209,34 +316,25 @@ class App
     </style>
 </head>
 <body>
-    <h1>SimpleMappr</h1>
-    <p>A point map web application for quality publications and presentations.</p>
+    <div class="lang-switcher">{$langSwitcher}</div>
+
+    <h1>{$t->t('general.app_name')}</h1>
+    <p>{$t->t('general.tagline')}</p>
+
+    <p style="margin: 1.5rem 0;">
+        <a href="/editor" style="display: inline-block; padding: 0.75rem 1.5rem; background: #3498db; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">{$t->t('editor.title')}</a>
+    </p>
 
     <div id="status" class="status loading">
-        Checking service status...
+        {$t->t('general.loading')}
     </div>
 
     <h2>Quick Links</h2>
     <ul>
-        <li><a href="/api">API Documentation</a></li>
-        <li><a href="/health">Health Check</a></li>
+        <li><a href="/editor">{$t->t('editor.title')}</a></li>
+        <li><a href="/api">{$t->t('nav.api')}</a></li>
+        <li><a href="/health">{$t->t('health.status')}</a></li>
     </ul>
-
-    <h2>Test Render</h2>
-    <p>Send a POST request to <code>/render</code> with JSON body:</p>
-    <pre>{
-  "output": "png",
-  "width": 400,
-  "height": 200,
-  "layers": ["countries"],
-  "points": [{
-    "legend": "Test",
-    "shape": "circle",
-    "size": 10,
-    "color": [255, 0, 0],
-    "coordinates": [[45.5, -75.5]]
-  }]
-}</pre>
 
     <script>
         fetch('/health')
@@ -244,14 +342,14 @@ class App
             .then(data => {
                 const el = document.getElementById('status');
                 el.className = 'status ' + (data.status === 'ok' ? '' : 'error');
-                el.innerHTML = '<strong>Status:</strong> ' + data.status +
-                    '<br><strong>Database:</strong> ' + data.database +
-                    '<br><strong>Render Service:</strong> ' + data.render_service;
+                el.innerHTML = '<strong>{$t->t('health.status')}:</strong> ' + data.status +
+                    '<br><strong>{$t->t('health.database')}:</strong> ' + data.database +
+                    '<br><strong>{$t->t('health.render_service')}:</strong> ' + data.render_service;
             })
             .catch(err => {
                 const el = document.getElementById('status');
                 el.className = 'status error';
-                el.textContent = 'Error checking status: ' + err.message;
+                el.textContent = '{$t->t('general.error')}: ' + err.message;
             });
     </script>
 </body>

@@ -24,8 +24,19 @@ class MapfileGenerator
         $width = (int)($request['width'] ?? 900);
         $height = (int)($request['height'] ?? 450);
         $projection = $request['projection'] ?? 'epsg:4326';
-        $bbox = $request['bbox'] ?? [-180, -90, 180, 90];
         $output = $request['output'] ?? 'png';
+
+        // Get projection-specific default extent if not provided or if using degrees with projected CRS
+        $projDef = Projections::get($projection);
+        $defaultBbox = $projDef['extent'] ?? [-180, -90, 180, 90];
+        $bbox = $request['bbox'] ?? $defaultBbox;
+
+        // If bbox looks like degrees but projection uses meters, use projection default
+        if ($projection !== 'epsg:4326' &&
+            abs($bbox[0]) <= 180 && abs($bbox[1]) <= 90 &&
+            abs($bbox[2]) <= 180 && abs($bbox[3]) <= 90) {
+            $bbox = $defaultBbox;
+        }
 
         $map = "MAP\n";
         $map .= "  NAME \"simplemappr\"\n";
@@ -102,10 +113,45 @@ class MapfileGenerator
         $projDef = Projections::get($projection);
 
         $block = "  PROJECTION\n";
-        $block .= "    \"init={$projection}\"\n";
+        if ($projDef && isset($projDef['proj'])) {
+            // Parse PROJ.4 string and output each parameter on its own line
+            $params = $this->parseProjString($projDef['proj']);
+            foreach ($params as $param) {
+                $block .= "    \"{$param}\"\n";
+            }
+        } else {
+            // Fallback to WGS84
+            $block .= "    \"proj=longlat\"\n";
+            $block .= "    \"ellps=WGS84\"\n";
+            $block .= "    \"datum=WGS84\"\n";
+            $block .= "    \"no_defs\"\n";
+        }
         $block .= "  END\n\n";
 
         return $block;
+    }
+
+    private function parseProjString(string $proj): array
+    {
+        // Remove leading + and split by space
+        $parts = preg_split('/\s+/', trim($proj));
+        $params = [];
+        foreach ($parts as $part) {
+            $part = ltrim($part, '+');
+            if (!empty($part)) {
+                $params[] = $part;
+            }
+        }
+        return $params;
+    }
+
+    private function getWgs84Projection(int $indent = 4): string
+    {
+        $pad = str_repeat(' ', $indent);
+        return "{$pad}\"proj=longlat\"\n" .
+               "{$pad}\"ellps=WGS84\"\n" .
+               "{$pad}\"datum=WGS84\"\n" .
+               "{$pad}\"no_defs\"\n";
     }
 
     private function generateOutputFormat(string $output): string
@@ -212,7 +258,10 @@ class MapfileGenerator
 
         // Layer projection (source data is WGS84)
         $block .= "    PROJECTION\n";
-        $block .= "      \"init=epsg:4326\"\n";
+        $block .= "      \"proj=longlat\"\n";
+        $block .= "      \"ellps=WGS84\"\n";
+        $block .= "      \"datum=WGS84\"\n";
+        $block .= "      \"no_defs\"\n";
         $block .= "    END\n";
 
         // Class for styling
@@ -258,7 +307,7 @@ class MapfileGenerator
         $block .= "    STATUS ON\n";
         $block .= "    TYPE POINT\n";
         $block .= "    PROJECTION\n";
-        $block .= "      \"init=epsg:4326\"\n";
+        $block .= $this->getWgs84Projection(6);
         $block .= "    END\n";
 
         // Class
@@ -343,7 +392,7 @@ class MapfileGenerator
         $block .= "    TYPE POLYGON\n";
         $block .= "    DATA \"10m_cultural/10m_cultural/ne_10m_admin_1_states_provinces\"\n";
         $block .= "    PROJECTION\n";
-        $block .= "      \"init=epsg:4326\"\n";
+        $block .= $this->getWgs84Projection(6);
         $block .= "    END\n";
         $block .= "    FILTER {$filter}\n";
         $block .= "    CLASS\n";
@@ -386,7 +435,7 @@ class MapfileGenerator
         $block .= "    STATUS ON\n";
         $block .= "    TYPE {$type}\n";
         $block .= "    PROJECTION\n";
-        $block .= "      \"init=epsg:4326\"\n";
+        $block .= $this->getWgs84Projection(6);
         $block .= "    END\n";
         $block .= "    CLASS\n";
         $block .= "      NAME \"" . addslashes($legend) . "\"\n";
@@ -420,7 +469,7 @@ class MapfileGenerator
         $block .= "    STATUS ON\n";
         $block .= "    TYPE LINE\n";
         $block .= "    PROJECTION\n";
-        $block .= "      \"init=epsg:4326\"\n";
+        $block .= $this->getWgs84Projection(6);
         $block .= "    END\n";
         $block .= "    CLASS\n";
         $block .= "      STYLE\n";

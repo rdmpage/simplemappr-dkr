@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimpleMappr - Map Editor</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.5;
+            color: #333;
+            background: #f5f5f5;
+        }
+
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .nav-menu a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+        }
+
+        .nav-menu a:hover {
+            color: white;
+        }
+
+        .lang-switcher {
+            font-size: 0.85rem;
+            padding-left: 1rem;
+            border-left: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .lang-switcher a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            margin-left: 0.5rem;
+        }
+
+        .lang-switcher a:hover {
+            color: white;
+        }
+
+        .lang-switcher strong {
+            color: white;
+            margin-left: 0.5rem;
+        }
+
+        .container {
+            display: flex;
+            height: calc(100vh - 60px);
+        }
+
+        .sidebar {
+            width: 400px;
+            background: white;
+            border-right: 1px solid #ddd;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .main {
+            flex: 1;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .map-container {
+            flex: 1;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .map-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .map-placeholder {
+            color: #999;
+            text-align: center;
+        }
+
+        .map-placeholder svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .section {
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            color: #555;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        textarea {
+            font-family: monospace;
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .row {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .row > * {
+            flex: 1;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.25rem;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .color-input {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .color-input input[type="color"] {
+            width: 40px;
+            height: 32px;
+            padding: 2px;
+            cursor: pointer;
+        }
+
+        .color-input input[type="text"] {
+            flex: 1;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
+        .btn-primary:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #ecf0f1;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #ddd;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem 0;
+        }
+
+        .status {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .status.loading {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .point-set {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .point-set-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .point-set-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .btn-remove {
+            background: none;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+            padding: 0.25rem;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        .btn-add {
+            width: 100%;
+            padding: 0.5rem;
+            background: #e9ecef;
+            border: 1px dashed #adb5bd;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .btn-add:hover {
+            background: #dee2e6;
+        }
+
+        .help-text {
+            font-size: 0.75rem;
+            color: #888;
+            margin-top: -0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .download-links {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .download-links a {
+            padding: 0.5rem 1rem;
+            background: #ecf0f1;
+            color: #333;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        .download-links a:hover {
+            background: #ddd;
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #ddd;
+            }
+
+            .map-container {
+                min-height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 data-i18n="general.app_name">SimpleMappr</h1>
+            <div class="header-right">
+                <nav class="nav-menu">
+                    <a href="/api" data-i18n="nav.api">API</a>
+                    <a href="/health" data-i18n="health.status">Status</a>
+                </nav>
+                <div id="langSwitcher" class="lang-switcher"></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="sidebar">
+            <form id="mapForm">
+                <!-- Point Sets -->
+                <div class="section">
+                    <div class="section-title" data-i18n="editor.point_data">Point Data</div>
+                    <div id="pointSets">
+                        <!-- Point sets will be added here -->
+                    </div>
+                    <button type="button" class="btn-add" onclick="addPointSet()" data-i18n="editor.add_layer">+ Add Point Set</button>
+                </div>
+
+                <!-- Projection -->
+                <div class="section">
+                    <div class="section-title" data-i18n="options.projection">Projection</div>
+                    <select id="projection">
+                        <option value="epsg:4326" data-i18n="projections.geographic">Geographic (WGS84)</option>
+                        <option value="esri:102009" data-i18n="projections.na_lambert">North America Lambert</option>
+                        <option value="esri:102015" data-i18n="projections.sa_lambert">South America Lambert</option>
+                        <option value="esri:102014" data-i18n="projections.europe_lambert">Europe Lambert</option>
+                        <option value="esri:102012" data-i18n="projections.asia_lambert">Asia Lambert</option>
+                        <option value="esri:102024" data-i18n="projections.africa_lambert">Africa Lambert</option>
+                        <option value="epsg:3112" data-i18n="projections.australia_lambert">Australia Lambert</option>
+                        <option value="epsg:102017" data-i18n="projections.north_pole">North Pole Azimuthal</option>
+                        <option value="epsg:102019" data-i18n="projections.south_pole">South Pole Azimuthal</option>
+                        <option value="epsg:54030" data-i18n="projections.world_robinson">World Robinson</option>
+                        <option value="epsg:3395" data-i18n="projections.world_mercator">World Mercator</option>
+                    </select>
+                </div>
+
+                <!-- Layers -->
+                <div class="section">
+                    <div class="section-title" data-i18n="layers.title">Layers</div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="layers" value="base"> <span data-i18n="layers.countries">Land outline</span></label>
+                        <label><input type="checkbox" name="layers" value="countries" checked> <span data-i18n="layers.countries">Countries</span></label>
+                        <label><input type="checkbox" name="layers" value="stateprovinces"> <span data-i18n="layers.states_provinces">States/Provinces</span></label>
+                        <label><input type="checkbox" name="layers" value="lakes"> <span data-i18n="labels.lakes">Lakes</span></label>
+                        <label><input type="checkbox" name="layers" value="rivers"> <span data-i18n="labels.rivers">Rivers</span></label>
+                        <label><input type="checkbox" name="layers" value="oceans"> <span data-i18n="layers.oceans_greyscale">Oceans</span></label>
+                    </div>
+                </div>
+
+                <!-- Dimensions -->
+                <div class="section">
+                    <div class="section-title" data-i18n="download_dialog.dimensions">Dimensions</div>
+                    <div class="row">
+                        <div>
+                            <label for="width">Width (px)</label>
+                            <input type="number" id="width" value="900" min="100" max="4000">
+                        </div>
+                        <div>
+                            <label for="height">Height (px)</label>
+                            <input type="number" id="height" value="450" min="100" max="4000">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Options -->
+                <div class="section">
+                    <div class="section-title" data-i18n="options.title">Options</div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" id="showLegend"> <span data-i18n="options.legend">Show Legend</span></label>
+                        <label><input type="checkbox" id="showScalebar"> <span data-i18n="options.scalebar">Show Scalebar</span></label>
+                        <label><input type="checkbox" id="showGraticules"> <span data-i18n="options.graticules">Show Grid</span></label>
+                        <label><input type="checkbox" id="showBorder" checked> <span data-i18n="options.border">Show Border</span></label>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="button-group">
+                    <button type="submit" class="btn-primary" id="generateBtn" data-i18n="general.preview">Generate Map</button>
+                    <button type="button" class="btn-secondary" onclick="clearForm()" data-i18n="general.clear">Clear</button>
+                </div>
+
+                <div id="status"></div>
+            </form>
+        </div>
+
+        <div class="main">
+            <div class="map-container" id="mapContainer">
+                <div class="map-placeholder">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                    </svg>
+                    <p>Enter coordinates and click<br><strong>Generate Map</strong></p>
+                </div>
+            </div>
+            <div class="actions">
+                <div class="download-links" id="downloadLinks" style="display: none;">
+                    <strong style="margin-right: 0.5rem; line-height: 2;" data-i18n="general.download">Download:</strong>
+                    <a href="#" id="downloadPng">PNG</a>
+                    <a href="#" id="downloadJpg">JPG</a>
+                    <a href="#" id="downloadSvg">SVG</a>
+                    <a href="#" id="downloadTif">TIFF</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let pointSetCount = 0;
+        let currentMapConfig = null;
+
+        // i18n helper function
+        function t(key, params = {}) {
+            const i18n = window.SimpleMappr?.i18n || {};
+            const keys = key.split('.');
+            let value = i18n;
+
+            for (const k of keys) {
+                if (value && typeof value === 'object' && k in value) {
+                    value = value[k];
+                } else {
+                    return key; // Return key if not found
+                }
+            }
+
+            if (typeof value !== 'string') return key;
+
+            // Replace placeholders
+            for (const [placeholder, replacement] of Object.entries(params)) {
+                value = value.replace(new RegExp(`%\\{${placeholder}\\}`, 'g'), replacement);
+                value = value.replace(new RegExp(`:${placeholder}`, 'g'), replacement);
+                value = value.replace(new RegExp(`%${placeholder}%`, 'g'), replacement);
+            }
+
+            return value;
+        }
+
+        // Apply translations to all elements with data-i18n attribute
+        function applyTranslations() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                const translated = t(key);
+                if (translated !== key) {
+                    el.textContent = translated;
+                }
+            });
+
+            // Update HTML lang attribute
+            const locale = window.SimpleMappr?.locale || 'en';
+            document.documentElement.lang = locale;
+
+            // Update page title
+            document.title = t('general.app_name') + ' - ' + t('editor.title');
+        }
+
+        // Build language switcher
+        function buildLangSwitcher() {
+            const switcher = document.getElementById('langSwitcher');
+            const locales = window.SimpleMappr?.supportedLocales || {};
+            const currentLocale = window.SimpleMappr?.locale || 'en';
+
+            const links = [];
+            for (const [code, info] of Object.entries(locales)) {
+                if (code === currentLocale) {
+                    links.push(`<strong>${info.native}</strong>`);
+                } else {
+                    links.push(`<a href="/lang?lang=${code}">${info.native}</a>`);
+                }
+            }
+
+            switcher.innerHTML = links.join(' | ');
+        }
+
+        // Marker shapes with i18n keys
+        function getShapes() {
+            return [
+                { value: 'circle', label: t('shapes.circle_solid') || 'Circle' },
+                { value: 'square', label: t('shapes.square_solid') || 'Square' },
+                { value: 'triangle', label: t('shapes.triangle_solid') || 'Triangle' },
+                { value: 'star', label: t('shapes.star_solid') || 'Star' },
+                { value: 'plus', label: t('shapes.plus') || 'Plus' },
+                { value: 'cross', label: t('shapes.cross') || 'Cross' },
+                { value: 'hexagon', label: t('shapes.hexagon_solid') || 'Hexagon' },
+                { value: 'opencircle', label: t('shapes.circle_open') || 'Circle (open)' },
+                { value: 'opensquare', label: t('shapes.square_open') || 'Square (open)' },
+                { value: 'opentriangle', label: t('shapes.triangle_open') || 'Triangle (open)' }
+            ];
+        }
+
+        // Default colors
+        const defaultColors = ['#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6', '#1abc9c'];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            buildLangSwitcher();
+            applyTranslations();
+            addPointSet();
+        });
+
+        function addPointSet() {
+            const container = document.getElementById('pointSets');
+            const index = pointSetCount++;
+            const color = defaultColors[index % defaultColors.length];
+            const shapes = getShapes();
+
+            const layerLabel = t('editor.layer', { num: index + 1 }) || `Point Set ${index + 1}`;
+            const legendLabel = t('points.legend') || 'Legend Label';
+            const legendPlaceholder = t('points.legend_placeholder') || 'e.g., Species A';
+            const coordsLabel = t('points.coordinates') || 'Coordinates';
+            const coordsPlaceholder = t('points.coordinates_placeholder') || 'Enter coordinates, one per line:\n45.5, -75.5';
+            const shapeLabel = t('points.shape') || 'Shape';
+            const sizeLabel = t('points.size') || 'Size';
+            const colorLabel = t('points.color') || 'Color';
+            const coordsHelp = t('points.coordinates_help') || 'Latitude, Longitude (decimal degrees or DMS)';
+
+            const html = `
+                <div class="point-set" id="pointSet${index}">
+                    <div class="point-set-header">
+                        <span class="point-set-title">${layerLabel}</span>
+                        ${index > 0 ? `<button type="button" class="btn-remove" onclick="removePointSet(${index})">&times;</button>` : ''}
+                    </div>
+                    <label>${legendLabel}</label>
+                    <input type="text" id="legend${index}" placeholder="${legendPlaceholder}">
+
+                    <label>${coordsLabel}</label>
+                    <textarea id="coords${index}" placeholder="${coordsPlaceholder}"></textarea>
+                    <p class="help-text">${coordsHelp}</p>
+
+                    <div class="row">
+                        <div>
+                            <label>${shapeLabel}</label>
+                            <select id="shape${index}">
+                                ${shapes.map(s => `<option value="${s.value}">${s.label}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div>
+                            <label>${sizeLabel}</label>
+                            <select id="size${index}">
+                                <option value="6">6px</option>
+                                <option value="8">8px</option>
+                                <option value="10" selected>10px</option>
+                                <option value="12">12px</option>
+                                <option value="14">14px</option>
+                                <option value="16">16px</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <label>${colorLabel}</label>
+                    <div class="color-input">
+                        <input type="color" id="color${index}" value="${color}" onchange="updateColorText(${index})">
+                        <input type="text" id="colorText${index}" value="${color}" onchange="updateColorPicker(${index})">
+                    </div>
+                </div>
+            `;
+
+            container.insertAdjacentHTML('beforeend', html);
+        }
+
+        function removePointSet(index) {
+            const el = document.getElementById(`pointSet${index}`);
+            if (el) el.remove();
+        }
+
+        function updateColorText(index) {
+            document.getElementById(`colorText${index}`).value = document.getElementById(`color${index}`).value;
+        }
+
+        function updateColorPicker(index) {
+            const text = document.getElementById(`colorText${index}`).value;
+            if (/^#[0-9a-f]{6}$/i.test(text)) {
+                document.getElementById(`color${index}`).value = text;
+            }
+        }
+
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? [
+                parseInt(result[1], 16),
+                parseInt(result[2], 16),
+                parseInt(result[3], 16)
+            ] : [0, 0, 0];
+        }
+
+        function parseCoordinates(text) {
+            const lines = text.trim().split('\n').filter(line => line.trim());
+            const coords = [];
+
+            for (const line of lines) {
+                const cleaned = line.trim();
+                if (!cleaned) continue;
+
+                // Try to parse various formats
+                let lat, lon;
+
+                // Check for DMS format with N/S/E/W
+                if (/[NSEW]/i.test(cleaned)) {
+                    const parts = cleaned.split(/[,;]\s*/);
+                    if (parts.length === 2) {
+                        lat = parseDMS(parts[0]);
+                        lon = parseDMS(parts[1]);
+                    }
+                } else {
+                    // Decimal degrees
+                    const parts = cleaned.split(/[\s,;]+/).filter(p => p);
+                    if (parts.length >= 2) {
+                        lat = parseFloat(parts[0]);
+                        lon = parseFloat(parts[1]);
+                    }
+                }
+
+                if (!isNaN(lat) && !isNaN(lon) && lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180) {
+                    coords.push([lat, lon]);
+                }
+            }
+
+            return coords;
+        }
+
+        function parseDMS(str) {
+            const neg = /[SW]/i.test(str) ? -1 : 1;
+            const cleaned = str.replace(/[NSEW°'"]/gi, ' ').trim();
+            const parts = cleaned.split(/\s+/).map(parseFloat).filter(n => !isNaN(n));
+
+            if (parts.length === 1) return parts[0] * neg;
+            if (parts.length === 2) return (parts[0] + parts[1] / 60) * neg;
+            if (parts.length >= 3) return (parts[0] + parts[1] / 60 + parts[2] / 3600) * neg;
+            return NaN;
+        }
+
+        function collectFormData() {
+            const pointSets = [];
+
+            // Collect all point sets
+            document.querySelectorAll('.point-set').forEach((el, i) => {
+                const match = el.id.match(/pointSet(\d+)/);
+                if (!match) return;
+                const index = match[1];
+
+                const coordsText = document.getElementById(`coords${index}`)?.value || '';
+                const coordinates = parseCoordinates(coordsText);
+
+                if (coordinates.length === 0) return;
+
+                pointSets.push({
+                    legend: document.getElementById(`legend${index}`)?.value || `Point Set ${i + 1}`,
+                    shape: document.getElementById(`shape${index}`)?.value || 'circle',
+                    size: parseInt(document.getElementById(`size${index}`)?.value || '10'),
+                    color: hexToRgb(document.getElementById(`color${index}`)?.value || '#000000'),
+                    coordinates: coordinates
+                });
+            });
+
+            // Collect layers
+            const layers = [];
+            document.querySelectorAll('input[name="layers"]:checked').forEach(cb => {
+                layers.push(cb.value);
+            });
+
+            // Build config
+            const config = {
+                output: 'png',
+                width: parseInt(document.getElementById('width').value) || 900,
+                height: parseInt(document.getElementById('height').value) || 450,
+                projection: document.getElementById('projection').value,
+                layers: layers.length > 0 ? layers : ['countries'],
+                points: pointSets,
+                options: {
+                    legend: document.getElementById('showLegend').checked,
+                    scalebar: document.getElementById('showScalebar').checked,
+                    border: document.getElementById('showBorder').checked
+                }
+            };
+
+            if (document.getElementById('showGraticules').checked) {
+                config.graticules = {
+                    enabled: true,
+                    spacing: 10,
+                    show_labels: true
+                };
+            }
+
+            return config;
+        }
+
+        function showStatus(message, type = 'loading') {
+            const el = document.getElementById('status');
+            el.className = 'status ' + type;
+            el.textContent = message;
+            el.style.display = 'block';
+        }
+
+        function hideStatus() {
+            document.getElementById('status').style.display = 'none';
+        }
+
+        async function generateMap(e) {
+            e.preventDefault();
+
+            const config = collectFormData();
+
+            if (config.points.length === 0) {
+                showStatus(t('errors.data_out_of_range') || 'Please enter at least one coordinate', 'error');
+                return;
+            }
+
+            currentMapConfig = config;
+            showStatus(t('download_dialog.building') || 'Generating map...', 'loading');
+
+            const btn = document.getElementById('generateBtn');
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('/render', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(config)
+                });
+
+                if (!response.ok) {
+                    const error = await response.text();
+                    throw new Error(error || `HTTP ${response.status}`);
+                }
+
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+
+                // Display the map
+                const container = document.getElementById('mapContainer');
+                container.innerHTML = `<img src="${url}" alt="Generated map">`;
+
+                // Show download links
+                document.getElementById('downloadLinks').style.display = 'flex';
+
+                // Update download links
+                updateDownloadLinks();
+
+                showStatus(t('general.success') || 'Map generated successfully!', 'success');
+                setTimeout(hideStatus, 3000);
+
+            } catch (err) {
+                showStatus(t('general.error') + ': ' + err.message, 'error');
+                console.error('Render error:', err);
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        function updateDownloadLinks() {
+            if (!currentMapConfig) return;
+
+            const formats = ['png', 'jpg', 'svg', 'tif'];
+            formats.forEach(fmt => {
+                const link = document.getElementById(`download${fmt.charAt(0).toUpperCase() + fmt.slice(1)}`);
+                if (link) {
+                    link.onclick = (e) => {
+                        e.preventDefault();
+                        downloadMap(fmt);
+                    };
+                }
+            });
+        }
+
+        async function downloadMap(format) {
+            if (!currentMapConfig) return;
+
+            const config = { ...currentMapConfig, output: format };
+
+            try {
+                showStatus(`${t('download_dialog.building') || 'Generating'} ${format.toUpperCase()}...`, 'loading');
+
+                const response = await fetch('/render', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(config)
+                });
+
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+
+                // Trigger download
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `simplemappr-map.${format}`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+
+                hideStatus();
+
+            } catch (err) {
+                showStatus(`${t('general.error')}: ` + err.message, 'error');
+            }
+        }
+
+        function clearForm() {
+            document.getElementById('pointSets').innerHTML = '';
+            pointSetCount = 0;
+            addPointSet();
+
+            document.getElementById('projection').value = 'epsg:4326';
+            document.getElementById('width').value = '900';
+            document.getElementById('height').value = '450';
+
+            document.querySelectorAll('input[name="layers"]').forEach(cb => {
+                cb.checked = cb.value === 'countries';
+            });
+
+            document.getElementById('showLegend').checked = false;
+            document.getElementById('showScalebar').checked = false;
+            document.getElementById('showGraticules').checked = false;
+            document.getElementById('showBorder').checked = true;
+
+            document.getElementById('mapContainer').innerHTML = `
+                <div class="map-placeholder">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                    </svg>
+                    <p>${t('points.coordinates_help') || 'Enter coordinates and click'}<br><strong>${t('general.preview') || 'Generate Map'}</strong></p>
+                </div>
+            `;
+
+            document.getElementById('downloadLinks').style.display = 'none';
+            currentMapConfig = null;
+            hideStatus();
+        }
+
+        // Form submission
+        document.getElementById('mapForm').addEventListener('submit', generateMap);
+    </script>
+</body>
+</html>
