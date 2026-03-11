@@ -13,6 +13,8 @@ RUN apt-get update && apt-get install -y \
     libjpeg-dev \
     fonts-dejavu-core \
     fonts-liberation \
+    curl \
+    unzip \
     && rm -rf /var/lib/apt/lists/*
 
 # Verify MapServer installation
@@ -24,6 +26,12 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 
 # Create app directory
 WORKDIR /app
+
+# Copy and run Natural Earth data download script
+COPY scripts/download-naturalearth.sh /tmp/download-naturalearth.sh
+RUN chmod +x /tmp/download-naturalearth.sh \
+    && /tmp/download-naturalearth.sh /app/mapserver/maps \
+    && rm /tmp/download-naturalearth.sh
 
 # Copy render service code
 COPY render/ /app/
