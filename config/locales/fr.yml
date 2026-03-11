@@ -94,8 +94,9 @@ fr:
   # Layers
   layers:
     title: Couches
-    countries: Pays
-    states_provinces: États/Provinces
+    base: base
+    countries: pays
+    states_provinces: états/provinces
     lakes_outline: lacs (contour)
     lakes_greyscale: lacs (plein)
     lakes_blue: lacs (bleu)

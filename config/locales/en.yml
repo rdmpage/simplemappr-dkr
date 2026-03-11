@@ -94,8 +94,9 @@ en:
   # Layers
   layers:
     title: Layers
-    countries: Countries
-    states_provinces: State/Provinces
+    base: base
+    countries: countries
+    states_provinces: states/provinces
     lakes_outline: lakes (outline)
     lakes_greyscale: lakes (greyscale)
     lakes_blue: lakes (blue)
