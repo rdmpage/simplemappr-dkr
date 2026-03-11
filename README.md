@@ -1,6 +1,6 @@
 # SimpleMappr Docker
 
-A modern Docker-based deployment of SimpleMappr, a point map web application for quality publications and presentations.
+A modern Docker-based deployment of [SimpleMappr](https://github.com/dshorthouse/SimpleMappr), a point map web application for quality publications and presentations.
 
 ## Quick Start
 
