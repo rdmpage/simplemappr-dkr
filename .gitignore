@@ -1,0 +1,82 @@
+# =============================================================================
+# Environment & Secrets
+# =============================================================================
+.env
+.env.local
+.env.*.local
+*.secret
+
+# =============================================================================
+# PHP / Composer
+# =============================================================================
+/vendor/
+composer.phar
+
+# =============================================================================
+# IDE & Editors
+# =============================================================================
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# =============================================================================
+# Logs & Cache
+# =============================================================================
+*.log
+/logs/
+/cache/
+/tmp/*
+!/tmp/.gitkeep
+
+# =============================================================================
+# Data
+# =============================================================================
+/data/*.db
+/data/*.sqlite
+/data/*.sqlite3
+!/data/.gitkeep
+
+# =============================================================================
+# MapServer / Shapefiles
+# =============================================================================
+# Large shapefile data - downloaded separately
+/mapserver/maps/10m_cultural/
+/mapserver/maps/10m_physical/
+/mapserver/maps/50m_cultural/
+/mapserver/maps/50m_physical/
+/mapserver/maps/110m_cultural/
+/mapserver/maps/110m_physical/
+/mapserver/maps/HYP_HR_SR_OB_DR/
+/mapserver/maps/NE2_HR_LC_SR_W_DR/
+/mapserver/maps/GRAY_HR_SR_OB_DR/
+/mapserver/maps/blue_marble/
+/mapserver/maps/conservation_international/
+/mapserver/maps/wwf_terr_ecos/
+/mapserver/maps/wwf_meow/
+
+# Keep the maps directory structure
+!/mapserver/maps/.gitkeep
+
+# =============================================================================
+# Docker
+# =============================================================================
+# Don't ignore docker files, but ignore local overrides
+docker-compose.local.yml
+
+# =============================================================================
+# Testing
+# =============================================================================
+/coverage/
+.phpunit.result.cache
+phpunit.xml
+
+# =============================================================================
+# Backups
+# =============================================================================
+/backups/
+*.backup
+*.bak

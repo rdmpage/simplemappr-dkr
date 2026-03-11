@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - BUILD_ENV=production
+    image: simplemappr/app:latest
+    container_name: simplemappr_app
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8080}:80"
+    environment:
+      - ENVIRONMENT=${ENVIRONMENT:-production}
+      - RENDER_SERVICE_URL=http://render:8080
+      - ORCID_CLIENT_ID=${ORCID_CLIENT_ID}
+      - ORCID_CLIENT_SECRET=${ORCID_CLIENT_SECRET}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - APP_URL=${APP_URL:-http://localhost:8080}
+      - APP_SECRET=${APP_SECRET:-change-me-in-production}
+      - DATABASE_PATH=/var/lib/simplemappr/simplemappr.db
+    volumes:
+      - simplemappr_data:/var/lib/simplemappr
+    depends_on:
+      render:
+        condition: service_healthy
+    networks:
+      - simplemappr_network
+    # Uncomment for Apple Silicon Macs:
+    # platform: linux/amd64
+
+  render:
+    build:
+      context: .
+      dockerfile: Dockerfile.render
+    image: simplemappr/render:latest
+    container_name: simplemappr_render
+    restart: unless-stopped
+    expose:
+      - "8080"
+    volumes:
+      - ./mapserver/maps:/app/mapserver/maps:ro
+    networks:
+      - simplemappr_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    # Uncomment for Apple Silicon Macs:
+    # platform: linux/amd64
+
+volumes:
+  simplemappr_data:
+    driver: local
+
+networks:
+  simplemappr_network:
+    driver: bridge

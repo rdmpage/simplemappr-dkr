@@ -1,0 +1,24 @@
+# MapServer Font List
+# Format: alias path
+# The fonts-dejavu-core and fonts-liberation packages are installed in the container
+
+# DejaVu fonts (primary)
+dejavu-sans      /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf
+dejavu-sans-bold /usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf
+dejavu-serif     /usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf
+dejavu-serif-bold /usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf
+dejavu-mono      /usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf
+
+# Liberation fonts (Microsoft metric-compatible)
+liberation-sans      /usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf
+liberation-sans-bold /usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf
+liberation-serif     /usr/share/fonts/truetype/liberation/LiberationSerif-Regular.ttf
+liberation-serif-bold /usr/share/fonts/truetype/liberation/LiberationSerif-Bold.ttf
+liberation-mono      /usr/share/fonts/truetype/liberation/LiberationMono-Regular.ttf
+
+# Aliases for compatibility with original SimpleMappr
+arial     /usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf
+arialbd   /usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf
+times     /usr/share/fonts/truetype/liberation/LiberationSerif-Regular.ttf
+timesbd   /usr/share/fonts/truetype/liberation/LiberationSerif-Bold.ttf
+courier   /usr/share/fonts/truetype/liberation/LiberationMono-Regular.ttf
