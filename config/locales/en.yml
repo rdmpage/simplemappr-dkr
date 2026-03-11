@@ -125,7 +125,7 @@ en:
     graticules: graticules
     fixed: fixed
     hide_labels: hide labels
-    line_thickness: Line Thickness
+    line_thickness: line thickness
     projection: Projection
     longitude_origin: longitude of natural origin
     zoom_hint: zoom prior to setting projection

@@ -125,7 +125,7 @@ fr:
     graticules: réticules
     fixed: fixée
     hide_labels: cacher étiquettes
-    line_thickness: Epaisseur des lignes
+    line_thickness: épaisseur des lignes
     projection: Projection
     longitude_origin: longitude d'origine naturelle
     zoom_hint: zoomer avant de fixer la projection

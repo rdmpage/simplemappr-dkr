@@ -70,8 +70,11 @@ class MapfileGenerator
         // Symbol definitions
         $map .= $this->generateSymbols();
 
+        // Line thickness multiplier
+        $lineThickness = (float)($request['line_thickness'] ?? 1.0);
+
         // Base layers
-        $map .= $this->generateBaseLayers($request['layers'] ?? ['countries'], $projection);
+        $map .= $this->generateBaseLayers($request['layers'] ?? ['countries'], $projection, $lineThickness);
 
         // Point layers
         foreach ($request['points'] ?? [] as $i => $pointSet) {
@@ -228,7 +231,7 @@ class MapfileGenerator
         return $block;
     }
 
-    private function generateBaseLayers(array $layers, string $projection): string
+    private function generateBaseLayers(array $layers, string $projection, float $lineThickness = 1.0): string
     {
         $block = "";
         $layerDefs = Layers::all();
@@ -239,13 +242,13 @@ class MapfileGenerator
             }
 
             $layer = $layerDefs[$layerName];
-            $block .= $this->generateLayerBlock($layerName, $layer, $projection);
+            $block .= $this->generateLayerBlock($layerName, $layer, $projection, $lineThickness);
         }
 
         return $block;
     }
 
-    private function generateLayerBlock(string $name, array $layer, string $projection): string
+    private function generateLayerBlock(string $name, array $layer, string $projection, float $lineThickness = 1.0): string
     {
         $block = "  LAYER\n";
         $block .= "    NAME \"{$name}\"\n";
@@ -278,7 +281,8 @@ class MapfileGenerator
             $block .= "        OUTLINECOLOR {$layer['outlinecolor']}\n";
         }
         if (isset($layer['width'])) {
-            $block .= "        WIDTH {$layer['width']}\n";
+            $width = $layer['width'] * $lineThickness;
+            $block .= "        WIDTH {$width}\n";
         }
 
         $block .= "      END\n";

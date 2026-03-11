@@ -439,6 +439,13 @@
                 <!-- Options -->
                 <div class="section">
                     <div class="section-title" data-i18n="options.title">Options</div>
+
+                    <label data-i18n="options.line_thickness">line thickness</label>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+                        <input type="range" id="lineThickness" min="0.25" max="2" step="0.25" value="1" style="flex: 1;">
+                        <span id="lineThicknessValue" style="min-width: 2.5rem; text-align: right;">1.00</span>
+                    </div>
+
                     <div class="checkbox-group">
                         <label><input type="checkbox" id="showLegend"> <span data-i18n="options.legend">legend</span></label>
                         <label><input type="checkbox" id="showScalebar"> <span data-i18n="options.scalebar">scalebar</span></label>
@@ -568,6 +575,13 @@
             buildLangSwitcher();
             applyTranslations();
             addPointSet();
+
+            // Line thickness slider
+            const slider = document.getElementById('lineThickness');
+            const valueDisplay = document.getElementById('lineThicknessValue');
+            slider.addEventListener('input', () => {
+                valueDisplay.textContent = parseFloat(slider.value).toFixed(2);
+            });
         });
 
         function addPointSet() {
@@ -738,6 +752,7 @@
                 projection: document.getElementById('projection').value,
                 layers: layers.length > 0 ? layers : ['countries'],
                 points: pointSets,
+                line_thickness: parseFloat(document.getElementById('lineThickness').value) || 1,
                 options: {
                     legend: document.getElementById('showLegend').checked,
                     scalebar: document.getElementById('showScalebar').checked,
