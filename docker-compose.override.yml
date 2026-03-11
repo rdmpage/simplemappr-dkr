@@ -1,5 +1,3 @@
-version: '3.8'
-
 # Development overrides - automatically loaded with docker-compose up
 services:
   app:
