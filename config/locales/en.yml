@@ -70,21 +70,21 @@ en:
   # Shapes
   shapes:
     select: "--select--"
-    plus: plus
-    cross: cross
-    asterisk: asterisk
+    plus: plus (+)
+    cross: cross (×)
+    asterisk: asterisk (*)
     solid: solid
-    circle_solid: circle (s)
-    star_solid: star (s)
-    square_solid: square (s)
-    triangle_solid: triangle (s)
-    hexagon_solid: hexagon (s)
+    circle_solid: circle (●)
+    star_solid: star (★)
+    square_solid: square (◼︎)
+    triangle_solid: triangle (▲)
+    hexagon_solid: hexagon (⬢)
     open: open
-    circle_open: circle (o)
-    star_open: star (o)
-    square_open: square (o)
-    triangle_open: triangle (o)
-    hexagon_open: hexagon (o)
+    circle_open: circle (○)
+    star_open: star (☆)
+    square_open: square (◻︎)
+    triangle_open: triangle (△)
+    hexagon_open: hexagon (⬡)
 
   # Regions
   regions_tab:
