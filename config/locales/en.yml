@@ -283,3 +283,10 @@ en:
     render_service: Render Service
     connected: connected
     degraded: degraded
+    services: Services
+    service: Service
+    environment: Environment
+    map_data: Map Data
+    map_data_description: Availability of map shapefiles used by the application.
+    license: License
+    back_to_editor: "← Back to editor"

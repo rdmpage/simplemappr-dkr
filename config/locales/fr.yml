@@ -283,3 +283,10 @@ fr:
     render_service: Service de rendu
     connected: connecté
     degraded: dégradé
+    services: Services
+    service: Service
+    environment: Environnement
+    map_data: Données cartographiques
+    map_data_description: Disponibilité des fichiers de cartes utilisés par l'application.
+    license: Licence
+    back_to_editor: "← Retour à l'éditeur"

@@ -340,7 +340,7 @@ class App
         $mapsHtml = '';
         foreach ($mapSources as $sourceName => $source) {
             $mapsHtml .= '<h3><a href="' . htmlspecialchars($source['url']) . '" target="_blank">' . htmlspecialchars($sourceName) . '</a></h3>';
-            $mapsHtml .= '<p class="license">License: ' . htmlspecialchars($source['license']) . '</p>';
+            $mapsHtml .= '<p class="license">' . $t->t('health.license') . ': ' . htmlspecialchars($source['license']) . '</p>';
             $mapsHtml .= '<table class="files-table">';
 
             foreach ($source['files'] as $name => $path) {
@@ -417,23 +417,23 @@ class App
     <div class="overall-status {$health['status']}">{$statusText}</div>
 
     <div class="section">
-        <h2>Services</h2>
+        <h2>{$t->t('health.services')}</h2>
         <table>
-            <tr><th>Service</th><th>Status</th></tr>
+            <tr><th>{$t->t('health.service')}</th><th>{$t->t('health.status')}</th></tr>
             {$servicesHtml}
             <tr><td>PHP</td><td>{$health['php']}</td></tr>
-            <tr><td>Environment</td><td>{$health['environment']}</td></tr>
+            <tr><td>{$t->t('health.environment')}</td><td>{$health['environment']}</td></tr>
         </table>
     </div>
 
     <div class="section">
-        <h2>Map Data</h2>
-        <p style="margin-bottom: 1rem; color: #666;">Availability of map shapefiles used by the application.</p>
+        <h2>{$t->t('health.map_data')}</h2>
+        <p style="margin-bottom: 1rem; color: #666;">{$t->t('health.map_data_description')}</p>
         {$mapsHtml}
     </div>
 
     <div class="back-link">
-        <a href="/">← Back to editor</a>
+        <a href="/">{$t->t('health.back_to_editor')}</a>
     </div>
 </body>
 </html>
