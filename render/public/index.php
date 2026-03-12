@@ -53,6 +53,10 @@ try {
             handleShapes();
             break;
 
+        case $method === 'GET' && $path === '/check-file':
+            handleCheckFile();
+            break;
+
         default:
             http_response_code(404);
             header('Content-Type: application/json');
@@ -157,4 +161,32 @@ function handleShapes(): void
 {
     header('Content-Type: application/json');
     echo json_encode(Symbols::shapes(), JSON_PRETTY_PRINT);
+}
+
+/**
+ * Check if a map file exists
+ */
+function handleCheckFile(): void
+{
+    header('Content-Type: application/json');
+
+    $path = $_GET['path'] ?? '';
+
+    // Security: only allow checking within mapserver/maps directory
+    if (empty($path) || strpos($path, '..') !== false) {
+        echo json_encode(['exists' => false, 'error' => 'Invalid path']);
+        return;
+    }
+
+    // Normalize path - strip leading /mapserver/maps if present
+    $path = preg_replace('#^/mapserver/maps/#', '', $path);
+    $path = preg_replace('#^/app/mapserver/maps/#', '', $path);
+
+    $fullPath = '/app/mapserver/maps/' . $path;
+    $exists = file_exists($fullPath);
+
+    echo json_encode([
+        'exists' => $exists,
+        'path' => $path
+    ]);
 }

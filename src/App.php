@@ -39,6 +39,10 @@ class App
                 $this->handleHealth();
                 break;
 
+            case $path === '/status':
+                $this->handleStatus();
+                break;
+
             case $path === '/lang':
                 $this->handleLanguageSwitch();
                 break;
@@ -184,6 +188,256 @@ class App
         }
 
         echo json_encode($status, JSON_PRETTY_PRINT);
+    }
+
+    /**
+     * Status page with map data availability
+     */
+    private function handleStatus(): void
+    {
+        header('Content-Type: text/html; charset=utf-8');
+
+        $t = $this->translator;
+        $locale = $t->getLocale();
+
+        // Get service health
+        $health = $this->getHealthStatus();
+
+        // Define map data sources with file paths and attribution
+        $mapSources = [
+            'Natural Earth - Physical' => [
+                'url' => 'https://www.naturalearthdata.com/',
+                'license' => 'Public Domain',
+                'files' => [
+                    'ne_10m_land' => '/mapserver/maps/10m_physical/ne_10m_land.shp',
+                    'ne_10m_ocean' => '/mapserver/maps/10m_physical/ne_10m_ocean.shp',
+                    'ne_10m_lakes' => '/mapserver/maps/10m_physical/ne_10m_lakes.shp',
+                    'ne_10m_rivers' => '/mapserver/maps/10m_physical/ne_10m_rivers_lake_centerlines.shp',
+                ]
+            ],
+            'Natural Earth - Cultural' => [
+                'url' => 'https://www.naturalearthdata.com/',
+                'license' => 'Public Domain',
+                'files' => [
+                    'ne_10m_admin_0 (countries)' => '/mapserver/maps/10m_cultural/10m_cultural/ne_10m_admin_0_map_units.shp',
+                    'ne_10m_admin_1 (states/provinces)' => '/mapserver/maps/10m_cultural/10m_cultural/ne_10m_admin_1_states_provinces.shp',
+                    'ne_10m_roads' => '/mapserver/maps/10m_cultural/10m_cultural/ne_10m_roads.shp',
+                    'ne_10m_railroads' => '/mapserver/maps/10m_cultural/10m_cultural/ne_10m_railroads.shp',
+                ]
+            ],
+            'Conservation International' => [
+                'url' => 'https://www.conservation.org/priorities/biodiversity-hotspots',
+                'license' => 'Contact CI for terms',
+                'files' => [
+                    'Biodiversity Hotspots' => '/mapserver/maps/conservation_international/hotspots_2016_1.shp',
+                ]
+            ],
+            'WWF' => [
+                'url' => 'https://www.worldwildlife.org/',
+                'license' => 'Contact WWF for terms',
+                'files' => [
+                    'Terrestrial Ecoregions' => '/mapserver/maps/wwf_terr_ecos/wwf_terr_ecos.shp',
+                    'Marine Ecoregions (MEOW)' => '/mapserver/maps/wwf_meow/meow_ecos.shp',
+                ]
+            ]
+        ];
+
+        // Check file availability
+        $renderMapsPath = RENDER_SERVICE_URL ? $this->getRenderMapsPath() : ROOT . '/mapserver/maps';
+
+        echo $this->getStatusHtml($t, $locale, $health, $mapSources, $renderMapsPath);
+    }
+
+    /**
+     * Get health status as array
+     */
+    private function getHealthStatus(): array
+    {
+        $status = [
+            'status' => 'ok',
+            'service' => 'simplemappr-app',
+            'environment' => ENVIRONMENT,
+            'php' => PHP_VERSION,
+            'timestamp' => date('c')
+        ];
+
+        // Check database
+        try {
+            $db = Database::getInstance();
+            $status['database'] = 'connected';
+        } catch (\Exception $e) {
+            $status['database'] = 'error';
+            $status['status'] = 'degraded';
+        }
+
+        // Check render service
+        $renderUrl = RENDER_SERVICE_URL . '/health';
+        $ch = curl_init($renderUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($httpCode === 200) {
+            $status['render_service'] = 'connected';
+        } else {
+            $status['render_service'] = 'error';
+            $status['status'] = 'degraded';
+        }
+
+        return $status;
+    }
+
+    /**
+     * Check if a map file exists via render service
+     */
+    private function getRenderMapsPath(): string
+    {
+        // Query the render service for its maps path
+        $ch = curl_init(RENDER_SERVICE_URL . '/health');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        // Default path used in render service
+        return '/app/mapserver/maps';
+    }
+
+    /**
+     * Check if map file exists via render service API
+     */
+    private function checkMapFileViaRender(string $relativePath): bool
+    {
+        $url = RENDER_SERVICE_URL . '/check-file?path=' . urlencode($relativePath);
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($httpCode === 200) {
+            $data = json_decode($response, true);
+            return $data['exists'] ?? false;
+        }
+        return false;
+    }
+
+    /**
+     * Generate status page HTML
+     */
+    private function getStatusHtml(Translator $t, string $locale, array $health, array $mapSources, string $mapsPath): string
+    {
+        $statusClass = $health['status'] === 'ok' ? 'status-ok' : 'status-error';
+        $statusText = $health['status'] === 'ok' ? $t->t('health.connected') : $t->t('health.degraded');
+
+        $servicesHtml = '';
+        $servicesHtml .= '<tr><td>' . $t->t('health.database') . '</td><td class="' . ($health['database'] === 'connected' ? 'status-ok' : 'status-error') . '">' . $health['database'] . '</td></tr>';
+        $servicesHtml .= '<tr><td>' . $t->t('health.render_service') . '</td><td class="' . ($health['render_service'] === 'connected' ? 'status-ok' : 'status-error') . '">' . $health['render_service'] . '</td></tr>';
+
+        $mapsHtml = '';
+        foreach ($mapSources as $sourceName => $source) {
+            $mapsHtml .= '<h3><a href="' . htmlspecialchars($source['url']) . '" target="_blank">' . htmlspecialchars($sourceName) . '</a></h3>';
+            $mapsHtml .= '<p class="license">License: ' . htmlspecialchars($source['license']) . '</p>';
+            $mapsHtml .= '<table class="files-table">';
+
+            foreach ($source['files'] as $name => $path) {
+                $exists = $this->checkMapFileViaRender($path);
+                $statusClass = $exists ? 'status-ok' : 'status-missing';
+                $statusIcon = $exists ? '✓' : '✗';
+                $mapsHtml .= '<tr>';
+                $mapsHtml .= '<td>' . htmlspecialchars($name) . '</td>';
+                $mapsHtml .= '<td class="' . $statusClass . '">' . $statusIcon . '</td>';
+                $mapsHtml .= '</tr>';
+            }
+
+            $mapsHtml .= '</table>';
+        }
+
+        return <<<HTML
+<!DOCTYPE html>
+<html lang="{$locale}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{$t->t('general.app_name')} - {$t->t('health.status')}</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #f5f5f5;
+        }
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+            margin: -2rem -2rem 2rem -2rem;
+        }
+        header a { color: white; text-decoration: none; }
+        header h1 { font-size: 1.5rem; }
+        h1 { margin-bottom: 1rem; }
+        h2 { color: #2c3e50; margin: 2rem 0 1rem 0; border-bottom: 2px solid #3498db; padding-bottom: 0.5rem; }
+        h3 { color: #555; margin: 1.5rem 0 0.5rem 0; }
+        h3 a { color: #3498db; }
+        .license { font-size: 0.85rem; color: #777; margin-bottom: 0.5rem; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; background: white; }
+        th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f8f9fa; font-weight: 600; }
+        .files-table td:last-child { width: 50px; text-align: center; font-weight: bold; }
+        .status-ok { color: #27ae60; }
+        .status-error { color: #e74c3c; }
+        .status-missing { color: #e74c3c; }
+        .overall-status {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        .overall-status.ok { background: #d4edda; color: #155724; }
+        .overall-status.error { background: #f8d7da; color: #721c24; }
+        .back-link { margin-top: 2rem; }
+        .back-link a { color: #3498db; }
+        .section { background: white; padding: 1.5rem; border-radius: 4px; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><a href="/">{$t->t('general.app_name')}</a></h1>
+    </header>
+
+    <h1>{$t->t('health.status')}</h1>
+
+    <div class="overall-status {$health['status']}">{$statusText}</div>
+
+    <div class="section">
+        <h2>Services</h2>
+        <table>
+            <tr><th>Service</th><th>Status</th></tr>
+            {$servicesHtml}
+            <tr><td>PHP</td><td>{$health['php']}</td></tr>
+            <tr><td>Environment</td><td>{$health['environment']}</td></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Map Data</h2>
+        <p style="margin-bottom: 1rem; color: #666;">Availability of map shapefiles used by the application.</p>
+        {$mapsHtml}
+    </div>
+
+    <div class="back-link">
+        <a href="/">← Back to editor</a>
+    </div>
+</body>
+</html>
+HTML;
     }
 
     /**
