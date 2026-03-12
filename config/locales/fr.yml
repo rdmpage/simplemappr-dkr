@@ -98,15 +98,20 @@ fr:
     base: base
     countries: pays
     states_provinces: états/provinces
+    lakes: lacs
     lakes_outline: lacs (contour)
     lakes_greyscale: lacs (plein)
     lakes_blue: lacs (bleu)
     rivers: rivières
     oceans_greyscale: océans (plein)
     oceans_blue: océans (bleu)
+    roads: routes
+    railroads: chemins de fer
     relief: relief
     relief_greyscale: relief (gris)
     biodiv_hotspots: hotspot de biodiv.
+    ecoregions: écorégions
+    marine_ecoregions: écorégions marines
 
   # Labels
   labels:

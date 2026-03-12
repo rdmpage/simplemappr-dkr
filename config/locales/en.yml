@@ -98,15 +98,20 @@ en:
     base: base
     countries: countries
     states_provinces: states/provinces
+    lakes: lakes
     lakes_outline: lakes (outline)
     lakes_greyscale: lakes (greyscale)
     lakes_blue: lakes (blue)
     rivers: rivers
     oceans_greyscale: oceans (greyscale)
     oceans_blue: oceans (blue)
+    roads: roads
+    railroads: railroads
     relief: relief
     relief_greyscale: relief (greyscale)
     biodiv_hotspots: biodiv. hotspots
+    ecoregions: ecoregions
+    marine_ecoregions: marine ecoregions
 
   # Labels
   labels:

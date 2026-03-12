@@ -51,10 +51,37 @@ class Layers
             'width' => 0.5
         ],
         'oceans' => [
-            'name' => 'Oceans',
+            'name' => 'Oceans (greyscale)',
             'data' => '10m_physical/ne_10m_ocean',
             'type' => 'POLYGON',
             'color' => '220 220 220'
+        ],
+        'oceansBlue' => [
+            'name' => 'Oceans (blue)',
+            'data' => '10m_physical/ne_10m_ocean',
+            'type' => 'POLYGON',
+            'color' => '170 200 230'
+        ],
+        'biodivHotspots' => [
+            'name' => 'Biodiversity Hotspots',
+            'data' => 'conservation_international/hotspots_2016_1',
+            'type' => 'POLYGON',
+            'color' => '200 150 150',
+            'outlinecolor' => '150 100 100'
+        ],
+        'ecoregions' => [
+            'name' => 'Ecoregions (WWF)',
+            'data' => 'wwf_terr_ecos/wwf_terr_ecos',
+            'type' => 'POLYGON',
+            'color' => '180 210 180',
+            'outlinecolor' => '100 150 100'
+        ],
+        'marineEcoregions' => [
+            'name' => 'Marine Ecoregions (WWF)',
+            'data' => 'wwf_meow/meow_ecos',
+            'type' => 'POLYGON',
+            'color' => '180 200 220',
+            'outlinecolor' => '100 130 170'
         ],
         'roads' => [
             'name' => 'Roads',
