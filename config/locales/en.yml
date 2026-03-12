@@ -283,10 +283,14 @@ en:
     render_service: Render Service
     connected: connected
     degraded: degraded
+    error: error
     services: Services
     service: Service
     environment: Environment
     map_data: Map Data
     map_data_description: Availability of map shapefiles used by the application.
     license: License
+    license_public_domain: Public Domain
+    license_contact_ci: Contact Conservation International for terms
+    license_contact_wwf: Contact WWF for terms
     back_to_editor: "← Back to editor"

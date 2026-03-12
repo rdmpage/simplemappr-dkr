@@ -207,7 +207,7 @@ class App
         $mapSources = [
             'Natural Earth - Physical' => [
                 'url' => 'https://www.naturalearthdata.com/',
-                'license' => 'Public Domain',
+                'license_key' => 'health.license_public_domain',
                 'files' => [
                     'ne_10m_land' => '/mapserver/maps/10m_physical/ne_10m_land.shp',
                     'ne_10m_ocean' => '/mapserver/maps/10m_physical/ne_10m_ocean.shp',
@@ -217,7 +217,7 @@ class App
             ],
             'Natural Earth - Cultural' => [
                 'url' => 'https://www.naturalearthdata.com/',
-                'license' => 'Public Domain',
+                'license_key' => 'health.license_public_domain',
                 'files' => [
                     'ne_10m_admin_0 (countries)' => '/mapserver/maps/10m_cultural/10m_cultural/ne_10m_admin_0_map_units.shp',
                     'ne_10m_admin_1 (states/provinces)' => '/mapserver/maps/10m_cultural/10m_cultural/ne_10m_admin_1_states_provinces.shp',
@@ -227,14 +227,14 @@ class App
             ],
             'Conservation International' => [
                 'url' => 'https://www.conservation.org/priorities/biodiversity-hotspots',
-                'license' => 'Contact CI for terms',
+                'license_key' => 'health.license_contact_ci',
                 'files' => [
                     'Biodiversity Hotspots' => '/mapserver/maps/conservation_international/hotspots_2016_1.shp',
                 ]
             ],
             'WWF' => [
                 'url' => 'https://www.worldwildlife.org/',
-                'license' => 'Contact WWF for terms',
+                'license_key' => 'health.license_contact_wwf',
                 'files' => [
                     'Terrestrial Ecoregions' => '/mapserver/maps/wwf_terr_ecos/wwf_terr_ecos.shp',
                     'Marine Ecoregions (MEOW)' => '/mapserver/maps/wwf_meow/meow_ecos.shp',
@@ -334,13 +334,19 @@ class App
         $statusText = $health['status'] === 'ok' ? $t->t('health.connected') : $t->t('health.degraded');
 
         $servicesHtml = '';
-        $servicesHtml .= '<tr><td>' . $t->t('health.database') . '</td><td class="' . ($health['database'] === 'connected' ? 'status-ok' : 'status-error') . '">' . $health['database'] . '</td></tr>';
-        $servicesHtml .= '<tr><td>' . $t->t('health.render_service') . '</td><td class="' . ($health['render_service'] === 'connected' ? 'status-ok' : 'status-error') . '">' . $health['render_service'] . '</td></tr>';
+        $dbStatus = $health['database'] === 'connected' ? $t->t('health.connected') : $t->t('health.error');
+        $dbClass = $health['database'] === 'connected' ? 'status-ok' : 'status-error';
+        $servicesHtml .= '<tr><td>' . $t->t('health.database') . '</td><td class="' . $dbClass . '">' . $dbStatus . '</td></tr>';
+
+        $renderStatus = $health['render_service'] === 'connected' ? $t->t('health.connected') : $t->t('health.error');
+        $renderClass = $health['render_service'] === 'connected' ? 'status-ok' : 'status-error';
+        $servicesHtml .= '<tr><td>' . $t->t('health.render_service') . '</td><td class="' . $renderClass . '">' . $renderStatus . '</td></tr>';
 
         $mapsHtml = '';
         foreach ($mapSources as $sourceName => $source) {
             $mapsHtml .= '<h3><a href="' . htmlspecialchars($source['url']) . '" target="_blank">' . htmlspecialchars($sourceName) . '</a></h3>';
-            $mapsHtml .= '<p class="license">' . $t->t('health.license') . ': ' . htmlspecialchars($source['license']) . '</p>';
+            $licenseText = $t->t($source['license_key']);
+            $mapsHtml .= '<p class="license">' . $t->t('health.license') . ': ' . htmlspecialchars($licenseText) . '</p>';
             $mapsHtml .= '<table class="files-table">';
 
             foreach ($source['files'] as $name => $path) {
