@@ -226,8 +226,8 @@ class App
                 ]
             ],
             'Conservation International' => [
-                'url' => 'https://www.conservation.org/priorities/biodiversity-hotspots',
-                'license_key' => 'health.license_contact_ci',
+                'url' => 'https://zenodo.org/records/3261807',
+                'license_key' => 'health.license_cc_by_sa',
                 'files' => [
                     'Biodiversity Hotspots' => '/mapserver/maps/conservation_international/hotspots_2016_1.shp',
                 ]

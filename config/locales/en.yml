@@ -291,6 +291,6 @@ en:
     map_data_description: Availability of map shapefiles used by the application.
     license: License
     license_public_domain: Public Domain
-    license_contact_ci: Contact Conservation International for terms
+    license_cc_by_sa: CC-BY-SA 4.0
     license_contact_wwf: Contact WWF for terms
     back_to_editor: "← Back to editor"
