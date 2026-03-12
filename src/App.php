@@ -226,8 +226,10 @@ class App
                 ]
             ],
             'Conservation International' => [
-                'url' => 'https://zenodo.org/records/3261807',
+                'url' => 'https://www.conservation.org/priorities/biodiversity-hotspots',
                 'license_key' => 'health.license_cc_by_sa',
+                'license_url' => 'https://creativecommons.org/licenses/by-sa/4.0/',
+                'doi' => '10.5281/zenodo.3261807',
                 'files' => [
                     'Biodiversity Hotspots' => '/mapserver/maps/conservation_international/hotspots_2016_1.shp',
                 ]
@@ -346,7 +348,17 @@ class App
         foreach ($mapSources as $sourceName => $source) {
             $mapsHtml .= '<h3><a href="' . htmlspecialchars($source['url']) . '" target="_blank">' . htmlspecialchars($sourceName) . '</a></h3>';
             $licenseText = $t->t($source['license_key']);
-            $mapsHtml .= '<p class="license">' . $t->t('health.license') . ': ' . htmlspecialchars($licenseText) . '</p>';
+            if (isset($source['license_url'])) {
+                $licenseText = '<a href="' . htmlspecialchars($source['license_url']) . '" target="_blank">' . htmlspecialchars($licenseText) . '</a>';
+            } else {
+                $licenseText = htmlspecialchars($licenseText);
+            }
+            $mapsHtml .= '<p class="license">' . $t->t('health.license') . ': ' . $licenseText;
+            if (isset($source['doi'])) {
+                $doiUrl = 'https://doi.org/' . $source['doi'];
+                $mapsHtml .= ' | DOI: <a href="' . htmlspecialchars($doiUrl) . '" target="_blank">' . htmlspecialchars($source['doi']) . '</a>';
+            }
+            $mapsHtml .= '</p>';
             $mapsHtml .= '<table class="files-table">';
 
             foreach ($source['files'] as $name => $path) {
