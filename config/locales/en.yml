@@ -157,7 +157,8 @@ en:
   toolbar:
     zoom_in: zoom in
     zoom_out: zoom out
-    crop: crop
+    crop: Crop
+    reset: Reset
     fill_regions: fill regions
     undo: undo
     redo: redo
@@ -245,6 +246,8 @@ en:
   about:
     title: About
     description: Create greyscale point maps suitable for reproduction on print media by copying and pasting geographic coordinates in layers, choosing pushpin styles, then downloading the result.
+    intro: SimpleMappr Docker is an open-source, Docker-based port of SimpleMappr — a web application for creating publication-quality point maps. Enter geographic coordinates, choose map layers and styles, then preview and download your map.
+    attribution: The original SimpleMappr was written and hosted by David Shorthouse. This port is by Rod Page.
     citing: Citing
     citing_text: All versions of SimpleMappr map data found on this website are in the Public Domain. You may use the maps in any manner, including modifying the content and design, electronic dissemination, and offset printing.
     recent_updates: Recent Updates

@@ -80,6 +80,20 @@
             width: 400px;
             background: white;
             border-right: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar-actions {
+            flex-shrink: 0;
+            padding: 1rem;
+            border-bottom: 2px solid #ddd;
+            background: white;
+        }
+
+        .sidebar-content {
+            flex: 1;
             overflow-y: auto;
             padding: 1rem;
         }
@@ -104,8 +118,8 @@
         }
 
         .map-container img {
-            max-width: 100%;
-            max-height: 100%;
+            width: 100%;
+            height: 100%;
             object-fit: contain;
         }
 
@@ -272,6 +286,92 @@
             color: #721c24;
         }
 
+        /* Status view */
+        #statusView {
+            display: none;
+            height: calc(100vh - 60px);
+            overflow-y: auto;
+            background: #f5f5f5;
+        }
+
+        .status-view-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .status-view-content h1 { margin-bottom: 1rem; color: #2c3e50; }
+        .status-view-content h2 { color: #2c3e50; margin: 2rem 0 1rem 0; border-bottom: 2px solid #3498db; padding-bottom: 0.5rem; }
+        .status-view-content h3 { color: #555; margin: 1.5rem 0 0.5rem 0; }
+        .status-view-content h3 a { color: #3498db; }
+        .status-view-content .provider-heading { display: flex; align-items: center; gap: 0.5rem; }
+        .status-view-content .provider-logo { width: 48px; height: 48px; object-fit: contain; flex-shrink: 0; }
+        .status-view-content .logo-disclaimer { font-size: 0.8rem; color: #999; margin-top: 1rem; font-style: italic; }
+        .status-view-content .license { font-size: 0.85rem; color: #777; margin-bottom: 0.5rem; }
+        .status-view-content table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; background: white; }
+        .status-view-content th, .status-view-content td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #eee; }
+        .status-view-content th { background: #f8f9fa; font-weight: 600; }
+        .status-view-content .files-table td:last-child { width: 50px; text-align: center; font-weight: bold; }
+        .status-view-content .status-ok { color: #27ae60; }
+        .status-view-content .status-error { color: #e74c3c; }
+        .status-view-content .status-missing { color: #e74c3c; }
+        .status-view-content .overall-status { padding: 1rem; border-radius: 4px; margin-bottom: 1rem; font-weight: 600; }
+        .status-view-content .overall-status.ok { background: #d4edda; color: #155724; }
+        .status-view-content .overall-status.error { background: #f8d7da; color: #721c24; }
+        .status-view-content .section { background: white; padding: 1.5rem; border-radius: 4px; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+        /* About modal */
+        .about-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .about-modal-overlay.visible {
+            display: flex;
+        }
+        .about-modal {
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            max-width: 520px;
+            width: 90%;
+            padding: 1.5rem;
+        }
+        .about-modal h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        .about-modal p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #444;
+            margin-bottom: 0.75rem;
+        }
+        .about-modal p:last-of-type {
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 1.25rem;
+        }
+        .about-modal-close {
+            display: block;
+            width: 100%;
+            padding: 0.5rem;
+            background: #e9ecef;
+            color: #333;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        .about-modal-close:hover {
+            background: #dee2e6;
+        }
+
         /* Error modal */
         .error-modal-overlay {
             display: none;
@@ -407,6 +507,107 @@
             background: #ddd;
         }
 
+        /* Crop toolbar */
+        .crop-toolbar {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0 0 0.5rem 0;
+            flex-shrink: 0;
+        }
+
+        .crop-toolbar.visible {
+            display: flex;
+        }
+
+        .btn-crop {
+            padding: 0.4rem 0.75rem;
+            background: #ecf0f1;
+            color: #333;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .btn-crop:hover { background: #ddd; }
+
+        .btn-crop.active {
+            background: #3498db;
+            color: white;
+            border-color: #2980b9;
+        }
+
+        .btn-crop-apply {
+            padding: 0.4rem 0.75rem;
+            background: #27ae60;
+            color: white;
+            border: 1px solid #219a52;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .btn-crop-apply:hover { background: #219a52; }
+        .btn-crop-apply:disabled { background: #95a5a6; cursor: not-allowed; }
+
+        /* Crop overlay */
+        #cropOverlay {
+            position: absolute;
+            inset: 0;
+            z-index: 10;
+            display: none;
+        }
+
+        #cropOverlay.active {
+            display: block;
+            cursor: crosshair;
+        }
+
+        #cropBox {
+            position: absolute;
+            display: none;
+            border: 2px solid white;
+            box-shadow: 0 0 0 9999px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(0,0,0,0.4);
+            box-sizing: border-box;
+            cursor: move;
+        }
+
+        #cropBox.visible { display: block; }
+
+        .crop-handle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: white;
+            border: 1px solid #555;
+            border-radius: 1px;
+            z-index: 11;
+        }
+
+        [data-handle="nw"] { top: -5px; left: -5px; cursor: nw-resize; }
+        [data-handle="n"]  { top: -5px; left: calc(50% - 5px); cursor: n-resize; }
+        [data-handle="ne"] { top: -5px; right: -5px; cursor: ne-resize; }
+        [data-handle="e"]  { top: calc(50% - 5px); right: -5px; cursor: e-resize; }
+        [data-handle="se"] { bottom: -5px; right: -5px; cursor: se-resize; }
+        [data-handle="s"]  { bottom: -5px; left: calc(50% - 5px); cursor: s-resize; }
+        [data-handle="sw"] { bottom: -5px; left: -5px; cursor: sw-resize; }
+        [data-handle="w"]  { top: calc(50% - 5px); left: -5px; cursor: w-resize; }
+
+        #cropInfo {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            background: rgba(0,0,0,0.65);
+            color: white;
+            font-size: 10px;
+            line-height: 1.5;
+            padding: 3px 6px;
+            border-radius: 3px;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
         @media (max-width: 900px) {
             .container {
                 flex-direction: column;
@@ -428,19 +629,29 @@
 <body>
     <header>
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h1 data-i18n="general.app_name">SimpleMappr</h1>
+            <h1 style="cursor:pointer;" onclick="showEditorView()" data-i18n="general.app_name">SimpleMappr</h1>
             <div class="header-right">
                 <nav class="nav-menu">
-                    <a href="/api" data-i18n="nav.api">API</a>
-                    <a href="/status" data-i18n="health.status">Status</a>
+                    <!-- <a href="/api" data-i18n="nav.api">API</a> -->
+                    <a href="#" onclick="loadStatusPage(); return false;" data-i18n="health.status">Status</a>
+                    <a href="#" onclick="openAboutModal(); return false;" data-i18n="nav.about">About</a>
+                    <a href="https://github.com/rdmpage/simplemappr-dkr/issues" target="_blank" rel="noopener" data-i18n="nav.feedback">Feedback</a>
                 </nav>
                 <div id="langSwitcher" class="lang-switcher"></div>
             </div>
         </div>
     </header>
 
-    <div class="container">
+    <div class="container" id="editorView">
         <div class="sidebar">
+            <div class="sidebar-actions">
+                <div class="button-group" style="margin-top: 0;">
+                    <button type="button" class="btn-primary" id="generateBtn" onclick="generateMap(event)" data-i18n="general.preview">Preview</button>
+                    <button type="button" class="btn-secondary" onclick="clearForm()" data-i18n="general.clear">Clear</button>
+                </div>
+                <div id="status"></div>
+            </div>
+            <div class="sidebar-content">
             <form id="mapForm">
                 <!-- Point Sets -->
                 <div class="section">
@@ -524,23 +735,35 @@
                     </div>
                 </div>
 
-                <!-- Buttons -->
-                <div class="button-group">
-                    <button type="submit" class="btn-primary" id="generateBtn" data-i18n="general.preview">Generate Map</button>
-                    <button type="button" class="btn-secondary" onclick="clearForm()" data-i18n="general.clear">Clear</button>
-                </div>
-
-                <div id="status"></div>
             </form>
+            </div>
         </div>
 
         <div class="main">
+            <div class="crop-toolbar" id="cropToolbar">
+                <button type="button" class="btn-crop" id="cropModeBtn" onclick="toggleCropMode()"><svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:-2px;margin-right:4px;"><rect x="3.5" y="3.5" width="6" height="6" stroke="currentColor" stroke-width="1.2" stroke-dasharray="2 1.2" fill="none"/><rect x="0" y="0" width="3" height="3" fill="currentColor"/><rect x="10" y="0" width="3" height="3" fill="currentColor"/><rect x="0" y="10" width="3" height="3" fill="currentColor"/><rect x="10" y="10" width="3" height="3" fill="currentColor"/></svg><span id="cropModeBtnLabel" data-i18n="toolbar.crop">Crop</span></button>
+                <button type="button" class="btn-crop-apply" id="cropApplyBtn" onclick="applyCrop()" style="display:none;" data-i18n="general.apply">Apply</button>
+                <button type="button" class="btn-crop" id="cropResetBtn" onclick="resetCrop()" style="display:none;" data-i18n="toolbar.reset">Reset</button>
+            </div>
             <div class="map-container" id="mapContainer">
                 <div class="map-placeholder">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
                     </svg>
                     <p>Enter coordinates and click<br><strong>Generate Map</strong></p>
+                </div>
+                <div id="cropOverlay">
+                    <div id="cropBox">
+                        <div id="cropInfo"></div>
+                        <div class="crop-handle" data-handle="nw"></div>
+                        <div class="crop-handle" data-handle="n"></div>
+                        <div class="crop-handle" data-handle="ne"></div>
+                        <div class="crop-handle" data-handle="e"></div>
+                        <div class="crop-handle" data-handle="se"></div>
+                        <div class="crop-handle" data-handle="s"></div>
+                        <div class="crop-handle" data-handle="sw"></div>
+                        <div class="crop-handle" data-handle="w"></div>
+                    </div>
                 </div>
             </div>
             <div class="actions">
@@ -556,8 +779,31 @@
     </div>
 
     <script>
+        // Projection default extents (mirrors Projections.php) — used for crop bbox initialisation
+        const PROJECTION_EXTENTS = {
+            'epsg:4326':   [-180, -90, 180, 90],
+            'esri:102009': [-8000000, -3000000, 8000000, 6500000],
+            'esri:102015': [-4000000, -6000000, 4000000, 4000000],
+            'esri:102014': [-3000000, -2000000, 5000000, 5500000],
+            'esri:102012': [-8000000, -2000000, 8000000, 9000000],
+            'esri:102024': [-4500000, -4500000, 4500000, 5000000],
+            'epsg:3112':   [-3000000, -5500000, 3000000, -1000000],
+            'epsg:102017': [-6000000, -6000000, 6000000, 6000000],
+            'epsg:102019': [-6000000, -6000000, 6000000, 6000000],
+            'epsg:54030':  [-17000000, -8600000, 17000000, 8600000],
+            'epsg:3395':   [-20037508, -15000000, 20037508, 18500000]
+        };
+
         let pointSetCount = 0;
         let currentMapConfig = null;
+        let cropMode = false;
+        let cropRect = null;
+        let currentBbox = [-180, -90, 180, 90];
+        let preCropBbox = null;
+        let cropApplied = false;
+        let dragOp = null;
+        let origRenderW = 900;
+        let origRenderH = 450;
 
         // i18n helper function
         function t(key, params = {}) {
@@ -921,6 +1167,47 @@
             return config;
         }
 
+        async function loadStatusPage() {
+            const editorView = document.getElementById('editorView');
+            const statusView = document.getElementById('statusView');
+            const statusContent = statusView.querySelector('.status-view-content');
+
+            editorView.style.display = 'none';
+            statusView.style.display = 'block';
+            statusContent.innerHTML = '<p style="padding: 2rem; color: #666;">Loading...</p>';
+
+            try {
+                const response = await fetch('/status?partial=1');
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                statusContent.innerHTML = await response.text();
+            } catch (err) {
+                statusContent.innerHTML = '<p style="padding: 2rem; color: #e74c3c;">Error: ' + err.message + '</p>';
+            }
+        }
+
+        function showEditorView() {
+            document.getElementById('statusView').style.display = 'none';
+            document.getElementById('editorView').style.display = 'flex';
+        }
+
+        function openAboutModal() {
+            document.getElementById('aboutModalIntro').textContent = t('about.intro') || '';
+            document.getElementById('aboutModalAttribution').textContent = t('about.attribution') || '';
+            document.getElementById('aboutModal').classList.add('visible');
+        }
+
+        function closeAboutModal(event) {
+            if (event && event.target !== document.getElementById('aboutModal')) return;
+            document.getElementById('aboutModal').classList.remove('visible');
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                document.getElementById('aboutModal').classList.remove('visible');
+                document.getElementById('errorModal').classList.remove('visible');
+            }
+        });
+
         function showError(message) {
             document.getElementById('errorModalTitle').textContent = t('general.error') || 'Error';
             document.getElementById('errorModalMessage').textContent = message;
@@ -932,8 +1219,309 @@
             document.getElementById('errorModal').classList.remove('visible');
         }
 
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') document.getElementById('errorModal').classList.remove('visible');
+        // ---- Crop feature ----
+
+        function getImageRect() {
+            const container = document.getElementById('mapContainer');
+            const img = container.querySelector('img.map-image');
+            if (!img || !img.naturalWidth) return null;
+            const cw = container.clientWidth;
+            const ch = container.clientHeight;
+            const scale = Math.min(cw / img.naturalWidth, ch / img.naturalHeight);
+            const dw = img.naturalWidth * scale;
+            const dh = img.naturalHeight * scale;
+            return { x: (cw - dw) / 2, y: (ch - dh) / 2, width: dw, height: dh };
+        }
+
+        function pixelToGeo(px, py, imageRect) {
+            const lon = currentBbox[0] + (px / imageRect.width) * (currentBbox[2] - currentBbox[0]);
+            const lat = currentBbox[3] - (py / imageRect.height) * (currentBbox[3] - currentBbox[1]);
+            return { lon, lat };
+        }
+
+        function getContainerCoords(e) {
+            const rect = document.getElementById('mapContainer').getBoundingClientRect();
+            return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+        }
+
+        function clampToImage(x, y, imageRect) {
+            return {
+                x: Math.max(0, Math.min(imageRect.width, x - imageRect.x)),
+                y: Math.max(0, Math.min(imageRect.height, y - imageRect.y))
+            };
+        }
+
+        function updateCropBox() {
+            if (!cropRect) return;
+            const imageRect = getImageRect();
+            if (!imageRect) return;
+            const x = Math.min(cropRect.x1, cropRect.x2);
+            const y = Math.min(cropRect.y1, cropRect.y2);
+            const w = Math.abs(cropRect.x2 - cropRect.x1);
+            const h = Math.abs(cropRect.y2 - cropRect.y1);
+            const box = document.getElementById('cropBox');
+            box.style.left = (imageRect.x + x) + 'px';
+            box.style.top = (imageRect.y + y) + 'px';
+            box.style.width = w + 'px';
+            box.style.height = h + 'px';
+            box.classList.add('visible');
+        }
+
+        function updateCropInfo() {
+            if (!cropRect || !currentMapConfig) return;
+            const imageRect = getImageRect();
+            if (!imageRect) return;
+            const x = Math.min(cropRect.x1, cropRect.x2);
+            const y = Math.min(cropRect.y1, cropRect.y2);
+            const w = Math.abs(cropRect.x2 - cropRect.x1);
+            const h = Math.abs(cropRect.y2 - cropRect.y1);
+            const outW = Math.round(w * (currentMapConfig.width / imageRect.width));
+            const outH = Math.round(h * (currentMapConfig.height / imageRect.height));
+            const tl = pixelToGeo(x, y, imageRect);
+            const br = pixelToGeo(x + w, y + h, imageRect);
+            const isGeo = (currentMapConfig.projection || 'epsg:4326') === 'epsg:4326';
+            let coordStr;
+            if (isGeo) {
+                coordStr = `${tl.lat.toFixed(2)}&deg;, ${tl.lon.toFixed(2)}&deg; &rarr; ${br.lat.toFixed(2)}&deg;, ${br.lon.toFixed(2)}&deg;`;
+            } else {
+                const fmt = v => (v / 1000).toFixed(0) + 'km';
+                coordStr = `${fmt(tl.lon)}, ${fmt(tl.lat)} &rarr; ${fmt(br.lon)}, ${fmt(br.lat)}`;
+            }
+            document.getElementById('cropInfo').innerHTML = `${outW} &times; ${outH} px<br>${coordStr}`;
+        }
+
+        function resetCropState() {
+            cropMode = false;
+            cropRect = null;
+            currentBbox = PROJECTION_EXTENTS[currentMapConfig?.projection] || [-180, -90, 180, 90];
+            preCropBbox = null;
+            cropApplied = false;
+            dragOp = null;
+            document.getElementById('cropOverlay').classList.remove('active');
+            document.getElementById('cropBox').classList.remove('visible');
+            document.getElementById('cropToolbar').classList.remove('visible');
+            document.getElementById('cropModeBtn').classList.remove('active');
+            document.getElementById('cropModeBtnLabel').textContent = t('toolbar.crop') || 'Crop';
+            document.getElementById('cropApplyBtn').style.display = 'none';
+            document.getElementById('cropResetBtn').style.display = 'none';
+        }
+
+        function toggleCropMode() {
+            cropMode = !cropMode;
+            const btn = document.getElementById('cropModeBtn');
+            const overlay = document.getElementById('cropOverlay');
+            if (cropMode) {
+                document.getElementById('cropModeBtnLabel').textContent = t('general.cancel') || 'Cancel';
+                btn.classList.add('active');
+                overlay.classList.add('active');
+            } else {
+                document.getElementById('cropModeBtnLabel').textContent = t('toolbar.crop') || 'Crop';
+                btn.classList.remove('active');
+                overlay.classList.remove('active');
+                if (!cropRect) {
+                    document.getElementById('cropBox').classList.remove('visible');
+                }
+            }
+        }
+
+        function canvasCropPreview(imageRect) {
+            // Instantly crop the current image using canvas — shown while MapServer re-renders.
+            const img = document.getElementById('mapContainer').querySelector('img.map-image');
+            if (!img) return null;
+            const x = Math.min(cropRect.x1, cropRect.x2);
+            const y = Math.min(cropRect.y1, cropRect.y2);
+            const w = Math.abs(cropRect.x2 - cropRect.x1);
+            const h = Math.abs(cropRect.y2 - cropRect.y1);
+            const scaleX = img.naturalWidth / imageRect.width;
+            const scaleY = img.naturalHeight / imageRect.height;
+            const srcX = Math.round(x * scaleX);
+            const srcY = Math.round(y * scaleY);
+            const srcW = Math.round(w * scaleX);
+            const srcH = Math.round(h * scaleY);
+            const canvas = document.createElement('canvas');
+            canvas.width = srcW;
+            canvas.height = srcH;
+            canvas.getContext('2d').drawImage(img, srcX, srcY, srcW, srcH, 0, 0, srcW, srcH);
+            return canvas.toDataURL('image/png');
+        }
+
+        async function applyCrop() {
+            if (!cropRect || !currentMapConfig) return;
+            const imageRect = getImageRect();
+            if (!imageRect) return;
+            const x = Math.min(cropRect.x1, cropRect.x2);
+            const y = Math.min(cropRect.y1, cropRect.y2);
+            const w = Math.abs(cropRect.x2 - cropRect.x1);
+            const h = Math.abs(cropRect.y2 - cropRect.y1);
+            const tl = pixelToGeo(x, y, imageRect);
+            const br = pixelToGeo(x + w, y + h, imageRect);
+            if (!cropApplied) preCropBbox = [...currentBbox];
+            const newBbox = [tl.lon, br.lat, br.lon, tl.lat];
+            // Selection aspect ratio in map-pixel space.
+            const outW = Math.round(w * (origRenderW / imageRect.width));
+            const outH = Math.round(h * (origRenderH / imageRect.height));
+            // Scale up so the crop is rendered at least as large as the original configured
+            // dimensions — the smaller geographic area gets more pixels = higher detail.
+            const upscale = Math.max(origRenderW / outW, origRenderH / outH);
+            const renderW = Math.round(outW * upscale);
+            const renderH = Math.round(outH * upscale);
+            const croppedConfig = { ...currentMapConfig, bbox: newBbox, raw_bbox: true, width: renderW, height: renderH };
+
+            // 1. Show canvas-cropped preview immediately, dismiss the selection overlay.
+            const preview = canvasCropPreview(imageRect);
+            const mapImg = document.getElementById('mapContainer').querySelector('img.map-image');
+            if (preview && mapImg) mapImg.src = preview;
+            currentBbox = newBbox;
+            currentMapConfig = croppedConfig;
+            cropApplied = true;
+            cropMode = false;
+            cropRect = null;
+            document.getElementById('cropModeBtnLabel').textContent = t('toolbar.crop') || 'Crop';
+            document.getElementById('cropModeBtn').classList.remove('active');
+            document.getElementById('cropOverlay').classList.remove('active');
+            document.getElementById('cropBox').classList.remove('visible');
+            document.getElementById('cropApplyBtn').style.display = 'none';
+            document.getElementById('cropResetBtn').style.display = 'inline-block';
+
+            // 2. Re-render at full quality in the background; swap when ready.
+            showStatus(t('download_dialog.building') || 'Rendering crop...', 'loading');
+            document.getElementById('cropApplyBtn').disabled = true;
+            try {
+                const response = await fetch('/render', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(croppedConfig)
+                });
+                if (!response.ok) throw new Error((await response.text()) || `HTTP ${response.status}`);
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const finalImg = document.getElementById('mapContainer').querySelector('img.map-image');
+                if (finalImg) finalImg.src = url;
+                updateDownloadLinks();
+                showStatus(t('general.success') || 'Crop applied!', 'success');
+                setTimeout(hideStatus, 3000);
+            } catch (err) {
+                showError(err.message);
+            } finally {
+                document.getElementById('cropApplyBtn').disabled = false;
+            }
+        }
+
+        async function resetCrop() {
+            if (!currentMapConfig) return;
+            const resetBbox = preCropBbox || PROJECTION_EXTENTS[currentMapConfig.projection] || [-180, -90, 180, 90];
+            const resetConfig = { ...currentMapConfig, bbox: resetBbox, raw_bbox: true };
+            showStatus('Resetting...', 'loading');
+            try {
+                const response = await fetch('/render', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(resetConfig)
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const mapImg = document.getElementById('mapContainer').querySelector('img.map-image');
+                if (mapImg) mapImg.src = url;
+                currentBbox = resetBbox;
+                currentMapConfig = resetConfig;
+                cropApplied = false;
+                cropRect = null;
+                preCropBbox = null;
+                cropMode = false;
+                document.getElementById('cropModeBtnLabel').textContent = t('toolbar.crop') || 'Crop';
+                document.getElementById('cropModeBtn').classList.remove('active');
+                document.getElementById('cropOverlay').classList.remove('active');
+                document.getElementById('cropBox').classList.remove('visible');
+                document.getElementById('cropApplyBtn').style.display = 'none';
+                document.getElementById('cropResetBtn').style.display = 'none';
+                updateDownloadLinks();
+                showStatus(t('general.success') || 'Reset!', 'success');
+                setTimeout(hideStatus, 3000);
+            } catch (err) {
+                showError(err.message);
+            }
+        }
+
+        // Crop mouse event handlers
+        document.getElementById('cropOverlay').addEventListener('mousedown', function(e) {
+            if (!cropMode) return;
+            e.preventDefault();
+            const imageRect = getImageRect();
+            if (!imageRect) return;
+
+            if (e.target.classList.contains('crop-handle')) {
+                const handle = e.target.getAttribute('data-handle');
+                dragOp = { type: 'handle', handle, startX: e.clientX, startY: e.clientY, startRect: { ...cropRect } };
+                return;
+            }
+
+            if (e.target.id === 'cropBox' && cropRect) {
+                dragOp = { type: 'move', startX: e.clientX, startY: e.clientY, startRect: { ...cropRect } };
+                return;
+            }
+
+            const coords = getContainerCoords(e);
+            const clamped = clampToImage(coords.x, coords.y, imageRect);
+            dragOp = { type: 'draw', startX: clamped.x, startY: clamped.y };
+            cropRect = { x1: clamped.x, y1: clamped.y, x2: clamped.x, y2: clamped.y };
+            document.getElementById('cropBox').classList.remove('visible');
+            document.getElementById('cropApplyBtn').style.display = 'none';
+            document.getElementById('cropResetBtn').style.display = cropApplied ? 'inline-block' : 'none';
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (!dragOp) return;
+            e.preventDefault();
+            const imageRect = getImageRect();
+            if (!imageRect) return;
+
+            if (dragOp.type === 'draw') {
+                const coords = getContainerCoords(e);
+                const clamped = clampToImage(coords.x, coords.y, imageRect);
+                cropRect = { x1: dragOp.startX, y1: dragOp.startY, x2: clamped.x, y2: clamped.y };
+
+            } else if (dragOp.type === 'move') {
+                const dx = e.clientX - dragOp.startX;
+                const dy = e.clientY - dragOp.startY;
+                const sr = dragOp.startRect;
+                const rw = sr.x2 - sr.x1;
+                const rh = sr.y2 - sr.y1;
+                const nx1 = Math.max(0, Math.min(imageRect.width - rw, sr.x1 + dx));
+                const ny1 = Math.max(0, Math.min(imageRect.height - rh, sr.y1 + dy));
+                cropRect = { x1: nx1, y1: ny1, x2: nx1 + rw, y2: ny1 + rh };
+
+            } else if (dragOp.type === 'handle') {
+                const dx = e.clientX - dragOp.startX;
+                const dy = e.clientY - dragOp.startY;
+                const sr = dragOp.startRect;
+                let { x1, y1, x2, y2 } = sr;
+                const hdl = dragOp.handle;
+                if (hdl.includes('n')) y1 = Math.max(0, Math.min(y2 - 5, sr.y1 + dy));
+                if (hdl.includes('s')) y2 = Math.min(imageRect.height, Math.max(y1 + 5, sr.y2 + dy));
+                if (hdl.includes('w')) x1 = Math.max(0, Math.min(x2 - 5, sr.x1 + dx));
+                if (hdl.includes('e')) x2 = Math.min(imageRect.width, Math.max(x1 + 5, sr.x2 + dx));
+                cropRect = { x1, y1, x2, y2 };
+            }
+
+            updateCropBox();
+            updateCropInfo();
+        });
+
+        document.addEventListener('mouseup', function() {
+            if (!dragOp) return;
+            if (cropRect) {
+                const rw = Math.abs(cropRect.x2 - cropRect.x1);
+                const rh = Math.abs(cropRect.y2 - cropRect.y1);
+                if (dragOp.type === 'draw' && (rw < 5 || rh < 5)) {
+                    cropRect = null;
+                    document.getElementById('cropBox').classList.remove('visible');
+                } else {
+                    document.getElementById('cropApplyBtn').style.display = 'inline-block';
+                    if (cropApplied) document.getElementById('cropResetBtn').style.display = 'inline-block';
+                }
+            }
+            dragOp = null;
         });
 
         function showStatus(message, type = 'loading') {
@@ -948,7 +1536,7 @@
         }
 
         async function generateMap(e) {
-            e.preventDefault();
+            if (e && e.preventDefault) e.preventDefault();
 
             const config = collectFormData();
 
@@ -980,9 +1568,32 @@
                 const blob = await response.blob();
                 const url = URL.createObjectURL(blob);
 
-                // Display the map
+                // Display the map - preserve crop overlay
                 const container = document.getElementById('mapContainer');
-                container.innerHTML = `<img src="${url}" alt="Generated map">`;
+                container.querySelectorAll('.map-placeholder').forEach(el => el.remove());
+                let mapImg = container.querySelector('img.map-image');
+                if (!mapImg) {
+                    mapImg = document.createElement('img');
+                    mapImg.className = 'map-image';
+                    mapImg.alt = 'Generated map';
+                    container.insertBefore(mapImg, document.getElementById('cropOverlay'));
+                }
+                mapImg.src = url;
+                currentBbox = config.bbox || PROJECTION_EXTENTS[config.projection] || [-180, -90, 180, 90];
+                origRenderW = config.width;
+                origRenderH = config.height;
+                // Reset any previous crop state on fresh render
+                cropRect = null;
+                cropApplied = false;
+                preCropBbox = null;
+                cropMode = false;
+                document.getElementById('cropModeBtnLabel').textContent = t('toolbar.crop') || 'Crop';
+                document.getElementById('cropModeBtn').classList.remove('active');
+                document.getElementById('cropOverlay').classList.remove('active');
+                document.getElementById('cropBox').classList.remove('visible');
+                document.getElementById('cropApplyBtn').style.display = 'none';
+                document.getElementById('cropResetBtn').style.display = 'none';
+                document.getElementById('cropToolbar').classList.add('visible');
 
                 // Show download links
                 document.getElementById('downloadLinks').style.display = 'flex';
@@ -1070,23 +1681,38 @@
             document.getElementById('showGraticules').checked = false;
             document.getElementById('showBorder').checked = true;
 
-            document.getElementById('mapContainer').innerHTML = `
-                <div class="map-placeholder">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                    </svg>
-                    <p>${t('points.coordinates_help') || 'Enter coordinates and click'}<br><strong>${t('general.preview') || 'Generate Map'}</strong></p>
-                </div>
-            `;
+            // Restore placeholder without destroying crop overlay
+            const mc = document.getElementById('mapContainer');
+            mc.querySelectorAll('img.map-image, .map-placeholder').forEach(el => el.remove());
+            const ph = document.createElement('div');
+            ph.className = 'map-placeholder';
+            ph.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" /></svg>
+                    <p>${t('points.coordinates_help') || 'Enter coordinates and click'}<br><strong>${t('general.preview') || 'Generate Map'}</strong></p>`;
+            mc.insertBefore(ph, document.getElementById('cropOverlay'));
 
             document.getElementById('downloadLinks').style.display = 'none';
             currentMapConfig = null;
             hideStatus();
+            resetCropState();
         }
 
         // Form submission
         document.getElementById('mapForm').addEventListener('submit', generateMap);
     </script>
+
+    <div id="statusView">
+        <div class="status-view-content"></div>
+    </div>
+
+    <div class="about-modal-overlay" id="aboutModal" onclick="closeAboutModal(event)">
+        <div class="about-modal">
+            <h3 id="aboutModalTitle" data-i18n="about.title">About</h3>
+            <p id="aboutModalIntro"></p>
+            <p id="aboutModalAttribution"></p>
+            <button class="about-modal-close" onclick="closeAboutModal()">OK</button>
+        </div>
+    </div>
 
     <div class="error-modal-overlay" id="errorModal" onclick="closeErrorModal(event)">
         <div class="error-modal">

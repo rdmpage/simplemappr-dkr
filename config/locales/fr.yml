@@ -157,7 +157,8 @@ fr:
   toolbar:
     zoom_in: zoomer
     zoom_out: dézoomer
-    crop: recadrer
+    crop: Recadrer
+    reset: Réinitialiser
     fill_regions: remplisser
     undo: défaire
     redo: refaire
@@ -245,6 +246,8 @@ fr:
   about:
     title: À propos
     description: Créer des cartes gratuites en copiant et collant les coordonnées géographiques en couches, en choisissant des styles punaise, puis en téléchargeant le résultat.
+    intro: SimpleMappr Docker est un port Docker open-source de SimpleMappr — une application web pour créer des cartes de points de qualité publication. Entrez des coordonnées géographiques, choisissez des couches et styles cartographiques, puis prévisualisez et téléchargez votre carte.
+    attribution: Le SimpleMappr original a été écrit et hébergé par David Shorthouse. Ce port est par Rod Page.
     citing: Citer
     citing_text: Toutes les versions de données cartographiques SimpleMappr trouvés sur ce site sont dans le domaine public. Vous pouvez utiliser les cartes de toute manière, y compris la modification du contenu et de la conception.
     recent_updates: Mises à jour

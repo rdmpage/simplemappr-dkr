@@ -31,8 +31,10 @@ class MapfileGenerator
         $defaultBbox = $projDef['extent'] ?? [-180, -90, 180, 90];
         $bbox = $request['bbox'] ?? $defaultBbox;
 
-        // If bbox looks like degrees but projection uses meters, use projection default
-        if ($projection !== 'epsg:4326' &&
+        // If bbox looks like degrees but projection uses meters, use projection default.
+        // Skip this check when raw_bbox is set (e.g. a crop bbox already in projection units).
+        $rawBbox = (bool)($request['raw_bbox'] ?? false);
+        if (!$rawBbox && $projection !== 'epsg:4326' &&
             abs($bbox[0]) <= 180 && abs($bbox[1]) <= 90 &&
             abs($bbox[2]) <= 180 && abs($bbox[3]) <= 90) {
             $bbox = $defaultBbox;

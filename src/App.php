@@ -207,7 +207,7 @@ class App
         $mapSources = [
             'Natural Earth - Physical' => [
                 'url' => 'https://www.naturalearthdata.com/',
-                'logo' => '/images/logos/natural-earth.svg',
+                'logo' => '/images/logos/natural-earth.png',
                 'license_key' => 'health.license_public_domain',
                 'files' => [
                     'ne_10m_land' => '/mapserver/maps/10m_physical/ne_10m_land.shp',
@@ -218,7 +218,7 @@ class App
             ],
             'Natural Earth - Cultural' => [
                 'url' => 'https://www.naturalearthdata.com/',
-                'logo' => '/images/logos/natural-earth.svg',
+                'logo' => '/images/logos/natural-earth.png',
                 'license_key' => 'health.license_public_domain',
                 'files' => [
                     'ne_10m_admin_0 (countries)' => '/mapserver/maps/10m_cultural/10m_cultural/ne_10m_admin_0_map_units.shp',
@@ -229,7 +229,7 @@ class App
             ],
             'Natural Earth - Rasters' => [
                 'url' => 'https://www.naturalearthdata.com/downloads/10m-raster-data/',
-                'logo' => '/images/logos/natural-earth.svg',
+                'logo' => '/images/logos/natural-earth.png',
                 'license_key' => 'health.license_public_domain',
                 'files' => [
                     'Cross-blend hypsometry (HYP_HR_SR_OB_DR)' => '/mapserver/maps/HYP_HR_SR_OB_DR/HYP_HR_SR_OB_DR.tif',
@@ -261,7 +261,11 @@ class App
         // Check file availability
         $renderMapsPath = RENDER_SERVICE_URL ? $this->getRenderMapsPath() : ROOT . '/mapserver/maps';
 
-        echo $this->getStatusHtml($t, $locale, $health, $mapSources, $renderMapsPath);
+        if (isset($_GET['partial'])) {
+            echo $this->buildStatusBodyHtml($t, $health, $mapSources);
+        } else {
+            echo $this->getStatusHtml($t, $locale, $health, $mapSources, $renderMapsPath);
+        }
     }
 
     /**
@@ -344,9 +348,8 @@ class App
     /**
      * Generate status page HTML
      */
-    private function getStatusHtml(Translator $t, string $locale, array $health, array $mapSources, string $mapsPath): string
+    private function buildStatusBodyHtml(Translator $t, array $health, array $mapSources): string
     {
-        $statusClass = $health['status'] === 'ok' ? 'status-ok' : 'status-error';
         $statusText = $health['status'] === 'ok' ? $t->t('health.connected') : $t->t('health.degraded');
 
         $servicesHtml = '';
@@ -381,17 +384,45 @@ class App
 
             foreach ($source['files'] as $name => $path) {
                 $exists = $this->checkMapFileViaRender($path);
-                $statusClass = $exists ? 'status-ok' : 'status-missing';
+                $fileStatusClass = $exists ? 'status-ok' : 'status-missing';
                 $statusIcon = $exists ? '✓' : '✗';
                 $mapsHtml .= '<tr>';
                 $mapsHtml .= '<td>' . htmlspecialchars($name) . '</td>';
-                $mapsHtml .= '<td class="' . $statusClass . '">' . $statusIcon . '</td>';
+                $mapsHtml .= '<td class="' . $fileStatusClass . '">' . $statusIcon . '</td>';
                 $mapsHtml .= '</tr>';
             }
 
             $mapsHtml .= '</table>';
         }
         $mapsHtml .= '<p class="logo-disclaimer">' . htmlspecialchars($t->t('health.logo_disclaimer')) . '</p>';
+
+        return <<<HTML
+    <h1>{$t->t('health.status')}</h1>
+
+    <div class="overall-status {$health['status']}">{$statusText}</div>
+
+    <div class="section">
+        <h2>{$t->t('health.services')}</h2>
+        <table>
+            <tr><th>{$t->t('health.service')}</th><th>{$t->t('health.status')}</th></tr>
+            {$servicesHtml}
+            <tr><td>PHP</td><td>{$health['php']}</td></tr>
+            <tr><td>{$t->t('health.environment')}</td><td>{$health['environment']}</td></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>{$t->t('health.map_data')}</h2>
+        <p style="margin-bottom: 1rem; color: #666;">{$t->t('health.map_data_description')}</p>
+        {$mapsHtml}
+    </div>
+HTML;
+    }
+
+    private function getStatusHtml(Translator $t, string $locale, array $health, array $mapSources, string $mapsPath): string
+    {
+        $bodyHtml = $this->buildStatusBodyHtml($t, $health, $mapSources);
+        $backLink = htmlspecialchars($t->t('health.back_to_editor'));
 
         return <<<HTML
 <!DOCTYPE html>
@@ -452,28 +483,10 @@ class App
         <h1><a href="/">{$t->t('general.app_name')}</a></h1>
     </header>
 
-    <h1>{$t->t('health.status')}</h1>
-
-    <div class="overall-status {$health['status']}">{$statusText}</div>
-
-    <div class="section">
-        <h2>{$t->t('health.services')}</h2>
-        <table>
-            <tr><th>{$t->t('health.service')}</th><th>{$t->t('health.status')}</th></tr>
-            {$servicesHtml}
-            <tr><td>PHP</td><td>{$health['php']}</td></tr>
-            <tr><td>{$t->t('health.environment')}</td><td>{$health['environment']}</td></tr>
-        </table>
-    </div>
-
-    <div class="section">
-        <h2>{$t->t('health.map_data')}</h2>
-        <p style="margin-bottom: 1rem; color: #666;">{$t->t('health.map_data_description')}</p>
-        {$mapsHtml}
-    </div>
+    {$bodyHtml}
 
     <div class="back-link">
-        <a href="/">{$t->t('health.back_to_editor')}</a>
+        <a href="/">{$backLink}</a>
     </div>
 </body>
 </html>
