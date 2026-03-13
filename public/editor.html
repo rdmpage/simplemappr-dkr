@@ -272,6 +272,67 @@
             color: #721c24;
         }
 
+        /* Error modal */
+        .error-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .error-modal-overlay.visible {
+            display: flex;
+        }
+        .error-modal {
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            max-width: 480px;
+            width: 90%;
+            padding: 1.5rem;
+        }
+        .error-modal-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            color: #721c24;
+        }
+        .error-modal-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+        .error-modal-icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+        .error-modal-message {
+            background: #f8d7da;
+            color: #721c24;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            word-break: break-word;
+            padding: 0.75rem;
+            border-radius: 4px;
+            margin-bottom: 1.25rem;
+        }
+        .error-modal-close {
+            display: block;
+            width: 100%;
+            padding: 0.5rem;
+            background: #e9ecef;
+            color: #333;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        .error-modal-close:hover {
+            background: #dee2e6;
+        }
+
         .status.success {
             background: #d4edda;
             color: #155724;
@@ -412,6 +473,9 @@
                 <div class="section">
                     <div class="section-title" data-i18n="layers.title">Layers</div>
                     <div class="checkbox-group">
+                        <label><input type="checkbox" name="layers" value="relief"> <span data-i18n="layers.relief">relief</span></label>
+                        <label><input type="checkbox" name="layers" value="reliefgrey"> <span data-i18n="layers.relief_greyscale">relief (greyscale)</span></label>
+                        <label><input type="checkbox" name="layers" value="blueMarble"> <span data-i18n="layers.blue_marble">blue marble</span></label>
                         <label><input type="checkbox" name="layers" value="base"> <span data-i18n="layers.base">base</span></label>
                         <label><input type="checkbox" name="layers" value="countries" checked> <span data-i18n="layers.countries">countries</span></label>
                         <label><input type="checkbox" name="layers" value="stateprovinces"> <span data-i18n="layers.states_provinces">states/provinces</span></label>
@@ -576,11 +640,91 @@
         // Default colors
         const defaultColors = ['#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6', '#1abc9c'];
 
+        // Debug coordinates - remove before production
+        const DEBUG_COORDS = `6.10000 100.30000
+0.78333 112.61660
+14.01940 99.53111
+2.80000 113.88300
+6.13330 100.36667
+1.59750 110.19416
+5.40224 118.02297
+5.47104 118.20095
+5.40592 117.99390
+5.42799 117.93347
+5.40995 117.93687
+5.41366 117.98435
+5.40736 118.00494
+5.46242 118.12155
+1.24000 110.23910
+28.48099 85.22477
+28.48493 85.22434
+-6.73468 107.04120
+15.70000 105.33000
+14.51000 100.95000
+14.10000 99.50000
+29.00000 107.20000
+28.50000 97.50000
+23.01000 102.42000
+29.70000 94.77000
+30.00000 94.93000
+22.33000 103.83000
+30.01000 95.01000
+25.00000 100.00000
+23.90000 100.03000
+24.03000 104.19000
+22.33000 104.00000
+27.97000 85.97000
+24.51000 101.79000
+25.03300 98.46700
+22.60000 99.90000
+22.11000 106.75000
+17.08333 101.78333
+16.56600 101.85000
+11.43000 107.40000
+11.60000 105.90000
+21.95000 100.50000
+17.45000 101.73000
+18.14590 100.14100
+13.45000 109.20000
+20.51000 104.50000
+22.16000 107.98000
+21.10000 105.40000
+12.43000 108.36000
+21.15000 104.14000
+29.57000 103.77000
+31.05000 110.33000
+29.00000 106.90000
+30.20000 108.50000
+29.50000 101.50000
+31.01000 103.37000
+27.46000 118.02000
+27.70000 108.83000
+29.00000 107.33000
+28.30000 107.20000
+28.34000 105.42000
+31.56000 110.50000
+18.60000 108.60000
+18.64000 109.70000
+18.00000 110.00000
+19.03000 109.83000
+29.83000 110.50000
+19.75000 110.00000
+32.60000 104.74000
+28.20000 83.98000
+30.03250 109.69710
+29.54500 103.32800
+30.80000 102.90000
+27.73000 98.67000
+24.14000 110.18000
+23.67000 117.00000
+27.80000 118.80000`;
+
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             buildLangSwitcher();
             applyTranslations();
             addPointSet();
+            document.getElementById('coords0').value = DEBUG_COORDS;
 
             // Line thickness slider
             const slider = document.getElementById('lineThickness');
@@ -777,6 +921,21 @@
             return config;
         }
 
+        function showError(message) {
+            document.getElementById('errorModalTitle').textContent = t('general.error') || 'Error';
+            document.getElementById('errorModalMessage').textContent = message;
+            document.getElementById('errorModal').classList.add('visible');
+        }
+
+        function closeErrorModal(event) {
+            if (event && event.target !== document.getElementById('errorModal')) return;
+            document.getElementById('errorModal').classList.remove('visible');
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') document.getElementById('errorModal').classList.remove('visible');
+        });
+
         function showStatus(message, type = 'loading') {
             const el = document.getElementById('status');
             el.className = 'status ' + type;
@@ -794,7 +953,7 @@
             const config = collectFormData();
 
             if (config.points.length === 0) {
-                showStatus(t('errors.data_out_of_range') || 'Please enter at least one coordinate', 'error');
+                showError(t('errors.data_out_of_range') || 'Please enter at least one coordinate');
                 return;
             }
 
@@ -835,7 +994,7 @@
                 setTimeout(hideStatus, 3000);
 
             } catch (err) {
-                showStatus(t('general.error') + ': ' + err.message, 'error');
+                showError(err.message);
                 console.error('Render error:', err);
             } finally {
                 btn.disabled = false;
@@ -889,7 +1048,7 @@
                 hideStatus();
 
             } catch (err) {
-                showStatus(`${t('general.error')}: ` + err.message, 'error');
+                showError(err.message);
             }
         }
 
@@ -928,5 +1087,16 @@
         // Form submission
         document.getElementById('mapForm').addEventListener('submit', generateMap);
     </script>
+
+    <div class="error-modal-overlay" id="errorModal" onclick="closeErrorModal(event)">
+        <div class="error-modal">
+            <div class="error-modal-header">
+                <span class="error-modal-icon">&#9888;</span>
+                <h3 id="errorModalTitle">Error</h3>
+            </div>
+            <p class="error-modal-message" id="errorModalMessage"></p>
+            <button class="error-modal-close" onclick="closeErrorModal()">OK</button>
+        </div>
+    </div>
 </body>
 </html>

@@ -109,6 +109,7 @@ en:
     railroads: railroads
     relief: relief
     relief_greyscale: relief (greyscale)
+    blue_marble: blue marble
     biodiv_hotspots: biodiv. hotspots
     ecoregions: ecoregions
     marine_ecoregions: marine ecoregions
@@ -294,3 +295,4 @@ en:
     license_cc_by_sa: CC-BY-SA 4.0
     license_contact_wwf: Contact WWF for terms
     back_to_editor: "← Back to editor"
+    logo_disclaimer: "Names and logos are used solely to identify the source of map data and do not imply any affiliation with or endorsement by those organizations. All trademarks are the property of their respective owners."

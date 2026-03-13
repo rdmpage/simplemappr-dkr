@@ -207,6 +207,7 @@ class App
         $mapSources = [
             'Natural Earth - Physical' => [
                 'url' => 'https://www.naturalearthdata.com/',
+                'logo' => '/images/logos/natural-earth.svg',
                 'license_key' => 'health.license_public_domain',
                 'files' => [
                     'ne_10m_land' => '/mapserver/maps/10m_physical/ne_10m_land.shp',
@@ -217,6 +218,7 @@ class App
             ],
             'Natural Earth - Cultural' => [
                 'url' => 'https://www.naturalearthdata.com/',
+                'logo' => '/images/logos/natural-earth.svg',
                 'license_key' => 'health.license_public_domain',
                 'files' => [
                     'ne_10m_admin_0 (countries)' => '/mapserver/maps/10m_cultural/10m_cultural/ne_10m_admin_0_map_units.shp',
@@ -225,8 +227,19 @@ class App
                     'ne_10m_railroads' => '/mapserver/maps/10m_cultural/10m_cultural/ne_10m_railroads.shp',
                 ]
             ],
+            'Natural Earth - Rasters' => [
+                'url' => 'https://www.naturalearthdata.com/downloads/10m-raster-data/',
+                'logo' => '/images/logos/natural-earth.svg',
+                'license_key' => 'health.license_public_domain',
+                'files' => [
+                    'Cross-blend hypsometry (HYP_HR_SR_OB_DR)' => '/mapserver/maps/HYP_HR_SR_OB_DR/HYP_HR_SR_OB_DR.tif',
+                    'Greyscale relief (GRAY_HR_SR_OB_DR)' => '/mapserver/maps/GRAY_HR_SR_OB_DR/GRAY_HR_SR_OB_DR.tif',
+                    'Blue Marble' => '/mapserver/maps/blue_marble/land_shallow_topo_21600.tif',
+                ]
+            ],
             'Conservation International' => [
                 'url' => 'https://www.conservation.org/priorities/biodiversity-hotspots',
+                'logo' => '/images/logos/conservation-international.svg',
                 'license_key' => 'health.license_cc_by_sa',
                 'license_url' => 'https://creativecommons.org/licenses/by-sa/4.0/',
                 'doi' => '10.5281/zenodo.3261807',
@@ -236,6 +249,7 @@ class App
             ],
             'WWF' => [
                 'url' => 'https://www.worldwildlife.org/',
+                'logo' => '/images/logos/wwf.svg',
                 'license_key' => 'health.license_contact_wwf',
                 'files' => [
                     'Terrestrial Ecoregions' => '/mapserver/maps/wwf_terr_ecos/wwf_terr_ecos.shp',
@@ -346,7 +360,11 @@ class App
 
         $mapsHtml = '';
         foreach ($mapSources as $sourceName => $source) {
-            $mapsHtml .= '<h3><a href="' . htmlspecialchars($source['url']) . '" target="_blank">' . htmlspecialchars($sourceName) . '</a></h3>';
+            $logoHtml = '';
+            if (isset($source['logo'])) {
+                $logoHtml = '<img src="' . htmlspecialchars($source['logo']) . '" alt="" class="provider-logo">';
+            }
+            $mapsHtml .= '<h3 class="provider-heading">' . $logoHtml . '<a href="' . htmlspecialchars($source['url']) . '" target="_blank">' . htmlspecialchars($sourceName) . '</a></h3>';
             $licenseText = $t->t($source['license_key']);
             if (isset($source['license_url'])) {
                 $licenseText = '<a href="' . htmlspecialchars($source['license_url']) . '" target="_blank">' . htmlspecialchars($licenseText) . '</a>';
@@ -373,6 +391,7 @@ class App
 
             $mapsHtml .= '</table>';
         }
+        $mapsHtml .= '<p class="logo-disclaimer">' . htmlspecialchars($t->t('health.logo_disclaimer')) . '</p>';
 
         return <<<HTML
 <!DOCTYPE html>
@@ -404,6 +423,9 @@ class App
         h2 { color: #2c3e50; margin: 2rem 0 1rem 0; border-bottom: 2px solid #3498db; padding-bottom: 0.5rem; }
         h3 { color: #555; margin: 1.5rem 0 0.5rem 0; }
         h3 a { color: #3498db; }
+        .provider-heading { display: flex; align-items: center; gap: 0.5rem; }
+        .provider-logo { width: 48px; height: 48px; object-fit: contain; flex-shrink: 0; }
+        .logo-disclaimer { font-size: 0.8rem; color: #999; margin-top: 1rem; font-style: italic; }
         .license { font-size: 0.85rem; color: #777; margin-bottom: 0.5rem; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; background: white; }
         th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #eee; }

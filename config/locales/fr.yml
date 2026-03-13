@@ -109,6 +109,7 @@ fr:
     railroads: chemins de fer
     relief: relief
     relief_greyscale: relief (gris)
+    blue_marble: marbre bleu
     biodiv_hotspots: hotspot de biodiv.
     ecoregions: écorégions
     marine_ecoregions: écorégions marines
@@ -294,3 +295,4 @@ fr:
     license_cc_by_sa: CC-BY-SA 4.0
     license_contact_wwf: Contacter WWF pour les conditions
     back_to_editor: "← Retour à l'éditeur"
+    logo_disclaimer: "Les noms et logos sont utilisés uniquement pour identifier la source des données cartographiques et n'impliquent aucune affiliation avec ces organisations ni approbation de leur part. Toutes les marques déposées sont la propriété de leurs détenteurs respectifs."

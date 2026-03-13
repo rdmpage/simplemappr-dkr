@@ -234,14 +234,13 @@ class MapfileGenerator
     private function generateBaseLayers(array $layers, string $projection, float $lineThickness = 1.0): string
     {
         $block = "";
-        $layerDefs = Layers::all();
 
         foreach ($layers as $layerName) {
-            if (!isset($layerDefs[$layerName])) {
+            $layer = Layers::get($layerName);
+            if ($layer === null) {
                 continue;
             }
 
-            $layer = $layerDefs[$layerName];
             $block .= $this->generateLayerBlock($layerName, $layer, $projection, $lineThickness);
         }
 
@@ -267,26 +266,29 @@ class MapfileGenerator
         $block .= "      \"no_defs\"\n";
         $block .= "    END\n";
 
-        // Class for styling
-        $block .= "    CLASS\n";
-        if (isset($layer['name'])) {
-            $block .= "      NAME \"{$layer['name']}\"\n";
-        }
-        $block .= "      STYLE\n";
+        // Raster layers need no CLASS block
+        if ($layer['type'] !== 'RASTER') {
+            $block .= "    CLASS\n";
+            if (isset($layer['name'])) {
+                $block .= "      NAME \"{$layer['name']}\"\n";
+            }
+            $block .= "      STYLE\n";
 
-        if (isset($layer['color'])) {
-            $block .= "        COLOR {$layer['color']}\n";
-        }
-        if (isset($layer['outlinecolor'])) {
-            $block .= "        OUTLINECOLOR {$layer['outlinecolor']}\n";
-        }
-        if (isset($layer['width'])) {
-            $width = $layer['width'] * $lineThickness;
-            $block .= "        WIDTH {$width}\n";
+            if (isset($layer['color'])) {
+                $block .= "        COLOR {$layer['color']}\n";
+            }
+            if (isset($layer['outlinecolor'])) {
+                $block .= "        OUTLINECOLOR {$layer['outlinecolor']}\n";
+            }
+            if (isset($layer['width'])) {
+                $width = $layer['width'] * $lineThickness;
+                $block .= "        WIDTH {$width}\n";
+            }
+
+            $block .= "      END\n";
+            $block .= "    END\n";
         }
 
-        $block .= "      END\n";
-        $block .= "    END\n";
         $block .= "  END\n\n";
 
         return $block;
