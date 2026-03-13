@@ -4,6 +4,34 @@ This document provides comprehensive documentation for porting SimpleMappr to a 
 
 ---
 
+## Container Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     Docker Network                           │
+│                                                              │
+│  ┌─────────────────────┐      ┌─────────────────────────┐   │
+│  │        app          │      │        render           │   │
+│  │                     │      │                         │   │
+│  │  PHP 7.4 + Apache   │─────▶│  PHP 7.4 + MapServer    │   │
+│  │  Web Application    │ HTTP │  Rendering Service      │   │
+│  │                     │      │                         │   │
+│  └─────────────────────┘      └─────────────────────────┘   │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Services
+
+- **app**: PHP 7.4 web application with Apache
+- **render**: PHP 7.4 render microservice with MapServer
+
+### Volumes
+
+- `simplemappr_data`: Persistent SQLite database storage
+
+---
+
 ## 1. Original Codebase Summary
 
 ### Source Code Structure

@@ -1,6 +1,18 @@
 # SimpleMappr Docker
 
-A modern Docker-based deployment of [SimpleMappr](https://github.com/dshorthouse/SimpleMappr), a point map web application for quality publications and presentations.
+A Docker-based deployment of [SimpleMappr](https://github.com/dshorthouse/SimpleMappr), a point map web application for quality publications and presentations.
+
+## Features
+
+Priorities discussed with David Shorthouse, the original developer, ordered from most to least important:
+
+1. **Raster-based shaded relief** — support for [Natural Earth cross-blend hypsometry](https://www.naturalearthdata.com/downloads/10m-raster-data/10m-cross-blend-hypso/), used in the majority of SimpleMappr outputs
+2. **Zoom, pan, and crop** — essential for raster layers, where output resolution is otherwise too poor for publication
+3. **Point layers** — coordinate-based markers, the core use case
+4. **Map storage and user authentication** — saves layers and settings between sessions; deferred to a later version
+5. **Region and shape drawing layers** — relatively little use compared to points
+6. **API** — used by integrators such as Tropicos and Yale; not a priority for initial release
+7. **Word and PowerPoint export** — low priority
 
 ## Quick Start
 
@@ -16,8 +28,6 @@ cd simplemappr-dkr
 
 # Copy environment file
 cp .env.example .env
-
-# Edit .env with your OAuth credentials (optional for basic testing)
 ```
 
 ### 2. Download Shapefiles
@@ -31,10 +41,7 @@ This downloads Natural Earth data (~500MB) required for map rendering.
 ### 3. Build and Run
 
 ```bash
-# Build containers
 docker-compose build
-
-# Start services
 docker-compose up
 ```
 
@@ -42,35 +49,9 @@ The application will be available at http://localhost:8080
 
 ### 4. Verify Installation
 
-- Open http://localhost:8080 - should show home page
+- Open http://localhost:8080 - should show the map editor
 - Open http://localhost:8080/health - should show service status
-- Open http://localhost:8080/api - should show API info
-
-## Architecture
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                     Docker Network                           │
-│                                                              │
-│  ┌─────────────────────┐      ┌─────────────────────────┐   │
-│  │        app          │      │        render           │   │
-│  │                     │      │                         │   │
-│  │  PHP 7.4 + Apache   │─────▶│  PHP 7.4 + MapServer    │   │
-│  │  Web Application    │ HTTP │  Rendering Service      │   │
-│  │                     │      │                         │   │
-│  └─────────────────────┘      └─────────────────────────┘   │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### Services
-
-- **app**: PHP 7.4 web application with Apache
-- **render**: PHP 7.4 render microservice with MapServer
-
-### Volumes
-
-- `simplemappr_data`: Persistent SQLite database storage
+- Open http://localhost:8080/status - should show map data availability
 
 ## Configuration
 
@@ -81,26 +62,6 @@ The application will be available at http://localhost:8080
 | `ENVIRONMENT` | development/production | development |
 | `APP_URL` | Public URL of application | http://localhost:8080 |
 | `APP_SECRET` | Session encryption key | (change in production) |
-| `ORCID_CLIENT_ID` | ORCID OAuth client ID | - |
-| `ORCID_CLIENT_SECRET` | ORCID OAuth client secret | - |
-| `GOOGLE_CLIENT_ID` | Google OAuth client ID | - |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret | - |
-
-### OAuth Setup
-
-#### ORCID
-
-1. Register at https://orcid.org/developer-tools
-2. Set redirect URI to `{APP_URL}/callback/orcid`
-3. Add credentials to `.env`
-
-#### Google
-
-1. Create project at https://console.cloud.google.com
-2. Enable Google+ API
-3. Create OAuth 2.0 credentials
-4. Set redirect URI to `{APP_URL}/callback/google`
-5. Add credentials to `.env`
 
 ## Development
 
@@ -133,74 +94,12 @@ docker-compose logs -f render
 ```bash
 # Open SQLite CLI
 docker-compose exec app sqlite3 /var/lib/simplemappr/simplemappr.db
-
-# Example queries
-.tables
-SELECT * FROM users;
-.quit
-```
-
-## API
-
-### Render Map
-
-```bash
-curl -X POST http://localhost:8080/render \
-  -H "Content-Type: application/json" \
-  -d '{
-    "output": "png",
-    "width": 400,
-    "height": 200,
-    "layers": ["countries"],
-    "points": [{
-      "legend": "Sample",
-      "shape": "circle",
-      "size": 10,
-      "color": [255, 0, 0],
-      "coordinates": [[45.5, -75.5]]
-    }]
-  }' \
-  --output map.png
-```
-
-### Available Endpoints
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/` | GET | Home page |
-| `/health` | GET | Health check |
-| `/api` | GET | API documentation |
-| `/render` | POST | Render map from JSON |
-
-## Production Deployment
-
-### Build Production Image
-
-```bash
-docker-compose -f docker-compose.yml build
-```
-
-### Run Production
-
-```bash
-# Use production compose file only (no override)
-docker-compose -f docker-compose.yml up -d
-```
-
-### Apple Silicon (M1/M2/M3)
-
-Uncomment the `platform: linux/amd64` lines in `docker-compose.yml` if MapServer doesn't work natively.
-
-### Backup Database
-
-```bash
-# Copy database from container
-docker cp simplemappr_app:/var/lib/simplemappr/simplemappr.db ./backup.db
 ```
 
 ## Documentation
 
-See [docs/architecture.md](docs/architecture.md) for detailed architecture documentation.
+- [Architecture](docs/ARCHITECTURE.md) — System design and container overview
+- [Deployment](docs/DEPLOYMENT.md) — Production deployment guide
 
 ## License
 
