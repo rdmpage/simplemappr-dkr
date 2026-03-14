@@ -15,9 +15,6 @@ defined('ENVIRONMENT') || define('ENVIRONMENT', getenv('ENVIRONMENT') ?: 'develo
 // Application root directory
 defined('ROOT') || define('ROOT', dirname(__DIR__));
 
-// Application URL (no trailing slash)
-defined('APP_URL') || define('APP_URL', getenv('APP_URL') ?: 'http://localhost:8080');
-
 // Render service URL
 defined('RENDER_SERVICE_URL') || define('RENDER_SERVICE_URL',
     getenv('RENDER_SERVICE_URL') ?: 'http://localhost:8081');
@@ -25,23 +22,6 @@ defined('RENDER_SERVICE_URL') || define('RENDER_SERVICE_URL',
 // Database path (SQLite)
 defined('DATABASE_PATH') || define('DATABASE_PATH',
     getenv('DATABASE_PATH') ?: ROOT . '/data/simplemappr.db');
-
-// OAuth: ORCID
-defined('ORCID_CLIENT_ID') || define('ORCID_CLIENT_ID', getenv('ORCID_CLIENT_ID') ?: '');
-defined('ORCID_CLIENT_SECRET') || define('ORCID_CLIENT_SECRET', getenv('ORCID_CLIENT_SECRET') ?: '');
-
-// OAuth: Google
-defined('GOOGLE_CLIENT_ID') || define('GOOGLE_CLIENT_ID', getenv('GOOGLE_CLIENT_ID') ?: '');
-defined('GOOGLE_CLIENT_SECRET') || define('GOOGLE_CLIENT_SECRET', getenv('GOOGLE_CLIENT_SECRET') ?: '');
-
-// Session/security
-defined('APP_SECRET') || define('APP_SECRET', getenv('APP_SECRET') ?: 'change-me-in-production');
-
-// Cookie settings
-defined('COOKIE_TIMEOUT') || define('COOKIE_TIMEOUT', 60 * 60 * 24 * 14); // 2 weeks
-
-// Upload directory
-defined('UPLOAD_DIRECTORY') || define('UPLOAD_DIRECTORY', ROOT . '/tmp');
 
 // Map defaults
 defined('DEFAULT_WIDTH') || define('DEFAULT_WIDTH', 900);
