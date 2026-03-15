@@ -153,6 +153,17 @@ en:
     south_pole: South Pole Azimuthal
     world_robinson: World Robinson
     world_mercator: World Mercator
+    geographic_short: Geographic
+    na_lambert_short: N. America
+    sa_lambert_short: S. America
+    europe_lambert_short: Europe
+    asia_lambert_short: Asia
+    africa_lambert_short: Africa
+    australia_lambert_short: Australia
+    north_pole_short: N. Pole
+    south_pole_short: S. Pole
+    world_robinson_short: Robinson
+    world_mercator_short: Mercator
 
   # Toolbar
   toolbar:

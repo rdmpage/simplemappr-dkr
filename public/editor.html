@@ -482,6 +482,59 @@
             background: #dee2e6;
         }
 
+        /* Projection thumbnail grid */
+        .projection-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.4rem;
+        }
+
+        .proj-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            padding: 0.3rem;
+            cursor: pointer;
+            font-weight: normal;
+            margin: 0;
+            transition: border-color 0.15s;
+        }
+
+        .proj-card:hover {
+            border-color: #aaa;
+        }
+
+        .proj-card input[type="radio"] {
+            display: none;
+        }
+
+        .proj-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 2px;
+        }
+
+        .proj-card span {
+            font-size: 0.7rem;
+            color: #555;
+            margin-top: 0.25rem;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .proj-card:has(input:checked) {
+            border-color: #3498db;
+            background: rgba(52, 152, 219, 0.08);
+        }
+
+        .proj-card:has(input:checked) span {
+            color: #2980b9;
+            font-weight: 600;
+        }
+
         .help-text {
             font-size: 0.75rem;
             color: #888;
@@ -666,19 +719,19 @@
                 <!-- Projection -->
                 <div class="section">
                     <div class="section-title" data-i18n="options.projection">Projection</div>
-                    <select id="projection">
-                        <option value="epsg:4326" data-i18n="projections.geographic">Geographic (WGS84)</option>
-                        <option value="esri:102009" data-i18n="projections.na_lambert">North America Lambert</option>
-                        <option value="esri:102015" data-i18n="projections.sa_lambert">South America Lambert</option>
-                        <option value="esri:102014" data-i18n="projections.europe_lambert">Europe Lambert</option>
-                        <option value="esri:102012" data-i18n="projections.asia_lambert">Asia Lambert</option>
-                        <option value="esri:102024" data-i18n="projections.africa_lambert">Africa Lambert</option>
-                        <option value="epsg:3112" data-i18n="projections.australia_lambert">Australia Lambert</option>
-                        <option value="epsg:102017" data-i18n="projections.north_pole">North Pole Azimuthal</option>
-                        <option value="epsg:102019" data-i18n="projections.south_pole">South Pole Azimuthal</option>
-                        <option value="epsg:54030" data-i18n="projections.world_robinson">World Robinson</option>
-                        <option value="epsg:3395" data-i18n="projections.world_mercator">World Mercator</option>
-                    </select>
+                    <div class="projection-grid">
+                        <label class="proj-card"><input type="radio" name="projection" value="epsg:4326" checked><img src="/images/projections/epsg-4326.png" alt=""><span data-i18n="projections.geographic_short">Geographic</span></label>
+                        <label class="proj-card"><input type="radio" name="projection" value="esri:102009"><img src="/images/projections/esri-102009.png" alt=""><span data-i18n="projections.na_lambert_short">N. America</span></label>
+                        <label class="proj-card"><input type="radio" name="projection" value="esri:102015"><img src="/images/projections/esri-102015.png" alt=""><span data-i18n="projections.sa_lambert_short">S. America</span></label>
+                        <label class="proj-card"><input type="radio" name="projection" value="esri:102014"><img src="/images/projections/esri-102014.png" alt=""><span data-i18n="projections.europe_lambert_short">Europe</span></label>
+                        <label class="proj-card"><input type="radio" name="projection" value="esri:102012"><img src="/images/projections/esri-102012.png" alt=""><span data-i18n="projections.asia_lambert_short">Asia</span></label>
+                        <label class="proj-card"><input type="radio" name="projection" value="esri:102024"><img src="/images/projections/esri-102024.png" alt=""><span data-i18n="projections.africa_lambert_short">Africa</span></label>
+                        <label class="proj-card"><input type="radio" name="projection" value="epsg:3112"><img src="/images/projections/epsg-3112.png" alt=""><span data-i18n="projections.australia_lambert_short">Australia</span></label>
+                        <label class="proj-card"><input type="radio" name="projection" value="epsg:102017"><img src="/images/projections/epsg-102017.png" alt=""><span data-i18n="projections.north_pole_short">N. Pole</span></label>
+                        <label class="proj-card"><input type="radio" name="projection" value="epsg:102019"><img src="/images/projections/epsg-102019.png" alt=""><span data-i18n="projections.south_pole_short">S. Pole</span></label>
+                        <label class="proj-card"><input type="radio" name="projection" value="epsg:54030"><img src="/images/projections/epsg-54030.png" alt=""><span data-i18n="projections.world_robinson_short">Robinson</span></label>
+                        <label class="proj-card"><input type="radio" name="projection" value="epsg:3395"><img src="/images/projections/epsg-3395.png" alt=""><span data-i18n="projections.world_mercator_short">Mercator</span></label>
+                    </div>
                 </div>
 
                 <!-- Base Map -->
@@ -1155,7 +1208,7 @@
                 output: 'png',
                 width: parseInt(document.getElementById('width').value) || 900,
                 height: parseInt(document.getElementById('height').value) || 450,
-                projection: document.getElementById('projection').value,
+                projection: document.querySelector('input[name="projection"]:checked')?.value || 'epsg:4326',
                 layers: layers.length > 0 ? layers : ['countries'],
                 points: pointSets,
                 line_thickness: parseFloat(document.getElementById('lineThickness').value) || 1,
@@ -1678,7 +1731,7 @@
             pointSetCount = 0;
             addPointSet();
 
-            document.getElementById('projection').value = 'epsg:4326';
+            document.querySelector('input[name="projection"][value="epsg:4326"]').checked = true;
             document.getElementById('width').value = '900';
             document.getElementById('height').value = '450';
 
