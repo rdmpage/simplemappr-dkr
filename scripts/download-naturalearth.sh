@@ -48,4 +48,4 @@ download_extract "cultural" "ne_10m_roads" "10m_cultural/10m_cultural"
 download_extract "cultural" "ne_10m_railroads" "10m_cultural/10m_cultural"
 
 echo "Natural Earth data download complete!"
-echo "Total size: $(du -sh ${DATA_DIR} | cut -f1)"
+echo "Total size: $(du -sh . | cut -f1)"
