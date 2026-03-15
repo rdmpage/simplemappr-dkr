@@ -154,14 +154,14 @@ fr:
     world_robinson: Monde Robinson
     world_mercator: Monde Mercator
     geographic_short: Géographique
-    na_lambert_short: Am. du Nord
-    sa_lambert_short: Am. du Sud
-    europe_lambert_short: Europe
-    asia_lambert_short: Asie
-    africa_lambert_short: Afrique
-    australia_lambert_short: Australie
-    north_pole_short: Pôle Nord
-    south_pole_short: Pôle Sud
+    na_lambert_short: Am. Nord Lambert
+    sa_lambert_short: Am. Sud Lambert
+    europe_lambert_short: Europe Lambert
+    asia_lambert_short: Asie Lambert
+    africa_lambert_short: Afrique Lambert
+    australia_lambert_short: Australie Lambert
+    north_pole_short: Pôle Nord Azimut.
+    south_pole_short: Pôle Sud Azimut.
     world_robinson_short: Robinson
     world_mercator_short: Mercator
 
