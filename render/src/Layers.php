@@ -10,14 +10,14 @@ class Layers
     private static array $layers = [
         'outline' => [
             'name' => 'Land',
-            'data' => '10m_physical/ne_10m_land',
+            'data' => '10m_physical/ne_10m_coastline',
             'type' => 'LINE',
             'color' => '10 10 10',
             'width' => 0.5
         ],
         'countries' => [
             'name' => 'Countries',
-            'data' => '10m_cultural/10m_cultural/ne_10m_admin_0_map_units',
+            'data' => '10m_cultural/10m_cultural/ne_10m_admin_0_boundary_lines_land',
             'type' => 'LINE',
             'color' => '10 10 10',
             'width' => 0.75

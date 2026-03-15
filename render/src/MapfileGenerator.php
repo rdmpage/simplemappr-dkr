@@ -45,7 +45,7 @@ class MapfileGenerator
         $map .= "  STATUS ON\n";
         $map .= "  SIZE {$width} {$height}\n";
         $map .= "  EXTENT {$bbox[0]} {$bbox[1]} {$bbox[2]} {$bbox[3]}\n";
-        $map .= "  UNITS DD\n";
+        $map .= "  UNITS " . ($projection === 'epsg:4326' ? 'DD' : 'METERS') . "\n";
         $map .= "  IMAGECOLOR 255 255 255\n";
         $map .= "  FONTSET \"{$this->fontsDir}/fonts.list\"\n";
         $map .= "  SHAPEPATH \"{$this->shapesDir}\"\n";
@@ -237,10 +237,18 @@ class MapfileGenerator
     {
         $block = "";
 
+        $isPolar = in_array($projection, ['epsg:102017', 'epsg:102019']);
+
         foreach ($layers as $layerName) {
             $layer = Layers::get($layerName);
             if ($layer === null) {
                 continue;
+            }
+
+            // ne_10m_coastline doesn't render Antarctica fully in polar azimuthal projections;
+            // fall back to ne_10m_land (polygon outline) which does.
+            if ($layerName === 'outline' && $isPolar) {
+                $layer['data'] = '10m_physical/ne_10m_land';
             }
 
             $block .= $this->generateLayerBlock($layerName, $layer, $projection, $lineThickness);
@@ -258,6 +266,19 @@ class MapfileGenerator
 
         if (isset($layer['data'])) {
             $block .= "    DATA \"{$layer['data']}\"\n";
+        }
+
+        if (isset($layer['filter'])) {
+            $block .= "    FILTER ({$layer['filter']})\n";
+        }
+
+        if ($layer['type'] !== 'RASTER') {
+            // WRAP=180 fixes antimeridian artifacts in Lambert projections but corrupts
+            // circumpolar features in polar azimuthal projections, so skip it for those.
+            $isPolar = in_array($projection, ['epsg:102017', 'epsg:102019']);
+            if (!$isPolar) {
+                $block .= "    PROCESSING \"WRAP=180\"\n";
+            }
         }
 
         // Layer projection (source data is WGS84)

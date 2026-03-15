@@ -29,6 +29,7 @@ download_extract() {
 
 # Physical layers
 echo "Downloading physical layers..."
+download_extract "physical" "ne_10m_coastline" "10m_physical"
 download_extract "physical" "ne_10m_land" "10m_physical"
 download_extract "physical" "ne_10m_ocean" "10m_physical"
 download_extract "physical" "ne_10m_lakes" "10m_physical"
@@ -39,6 +40,7 @@ download_extract "physical" "ne_10m_geography_regions_polys" "10m_physical"
 # Cultural layers
 echo "Downloading cultural layers..."
 download_extract "cultural" "ne_10m_admin_0_map_units" "10m_cultural/10m_cultural"
+download_extract "cultural" "ne_10m_admin_0_boundary_lines_land" "10m_cultural/10m_cultural"
 download_extract "cultural" "ne_10m_admin_1_states_provinces" "10m_cultural/10m_cultural"
 download_extract "cultural" "ne_10m_admin_1_states_provinces_lines" "10m_cultural/10m_cultural"
 download_extract "cultural" "ne_10m_populated_places_simple" "10m_cultural/10m_cultural"
