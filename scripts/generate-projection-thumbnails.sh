@@ -6,11 +6,25 @@
 # Usage: bash scripts/generate-projection-thumbnails.sh
 # The render service must be running (docker compose up -d).
 #
+# On a server where the render service is not exposed to the host,
+# the script runs curl inside the app container automatically.
+#
 
-RENDER_URL="${RENDER_URL:-http://localhost:8080/render}"
-OUTPUT_DIR="$(cd "$(dirname "$0")/.." && pwd)/public/images/projections"
+REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+OUTPUT_DIR="$REPO_DIR/public/images/projections"
 
 mkdir -p "$OUTPUT_DIR"
+
+# Determine how to reach the render service.
+# If localhost:8080 is reachable use it directly; otherwise run curl
+# inside the app container (which shares the Docker network with render).
+if curl -sf http://localhost:8080/health > /dev/null 2>&1; then
+    RENDER_URL="http://localhost:8080/render"
+    USE_DOCKER_EXEC=""
+else
+    RENDER_URL="http://render:8080/render"
+    USE_DOCKER_EXEC="simplemappr_app"
+fi
 
 generate() {
     local projection="$1"
@@ -31,10 +45,21 @@ generate() {
         "options": {"border": false, "legend": false, "scalebar": false}
     }' "$projection")
 
-    http_status=$(curl -s -o "$outfile" -w "%{http_code}" \
-        -X POST "$RENDER_URL" \
-        -H "Content-Type: application/json" \
-        -d "$payload")
+    if [ -n "$USE_DOCKER_EXEC" ]; then
+        http_status=$(docker exec "$USE_DOCKER_EXEC" \
+            curl -s -o "/tmp/$filename" -w "%{http_code}" \
+            -X POST "$RENDER_URL" \
+            -H "Content-Type: application/json" \
+            -d "$payload")
+        if [ "$http_status" = "200" ]; then
+            docker cp "$USE_DOCKER_EXEC:/tmp/$filename" "$outfile"
+        fi
+    else
+        http_status=$(curl -s -o "$outfile" -w "%{http_code}" \
+            -X POST "$RENDER_URL" \
+            -H "Content-Type: application/json" \
+            -d "$payload")
+    fi
 
     if [ "$http_status" = "200" ]; then
         echo "ok"
