@@ -685,11 +685,10 @@
                 <div class="section">
                     <div class="section-title" data-i18n="layers.base_map">Base Map</div>
                     <div class="checkbox-group">
-                        <label><input type="radio" name="basemap" value="" checked> <span data-i18n="layers.none">none</span></label>
+                        <label><input type="radio" name="basemap" value="outline" checked> <span data-i18n="layers.outline">outline</span></label>
                         <label><input type="radio" name="basemap" value="relief"> <span data-i18n="layers.relief">relief</span></label>
                         <label><input type="radio" name="basemap" value="reliefgrey"> <span data-i18n="layers.relief_greyscale">relief (greyscale)</span></label>
                         <label><input type="radio" name="basemap" value="blueMarble"> <span data-i18n="layers.blue_marble">blue marble</span></label>
-                        <label><input type="radio" name="basemap" value="base"> <span data-i18n="layers.base">base</span></label>
                     </div>
                 </div>
 
@@ -1146,7 +1145,7 @@
             // Collect layers — base map radio first, then layer checkboxes
             const layers = [];
             const basemap = document.querySelector('input[name="basemap"]:checked')?.value;
-            if (basemap) layers.push(basemap);
+            if (basemap) layers.push(basemap); // always truthy now (no "none" option)
             document.querySelectorAll('input[name="layers"]:checked').forEach(cb => {
                 layers.push(cb.value);
             });
@@ -1683,7 +1682,7 @@
             document.getElementById('width').value = '900';
             document.getElementById('height').value = '450';
 
-            document.querySelector('input[name="basemap"][value=""]').checked = true;
+            document.querySelector('input[name="basemap"][value="outline"]').checked = true;
             document.querySelectorAll('input[name="layers"]').forEach(cb => {
                 cb.checked = cb.value === 'countries';
             });

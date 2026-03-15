@@ -8,7 +8,7 @@ declare(strict_types=1);
 class Layers
 {
     private static array $layers = [
-        'base' => [
+        'outline' => [
             'name' => 'Land',
             'data' => '10m_physical/ne_10m_land',
             'type' => 'LINE',

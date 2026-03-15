@@ -96,8 +96,7 @@ en:
   layers:
     title: Layers
     base_map: Base Map
-    none: none
-    base: base
+    outline: outline
     countries: countries
     states_provinces: states/provinces
     lakes: lakes

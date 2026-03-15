@@ -96,8 +96,7 @@ fr:
   layers:
     title: Couches
     base_map: Fond de carte
-    none: aucun
-    base: base
+    outline: contour
     countries: pays
     states_provinces: états/provinces
     lakes: lacs
