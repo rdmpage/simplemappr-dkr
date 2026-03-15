@@ -8,7 +8,7 @@ en:
 
   # General/Common
   general:
-    app_name: SimpleMappr
+    app_name: SimpleMappr Dkr
     tagline: A point map web application for quality publications and presentations
     keywords: publication,presentation,map,georeference
     sign_in: Sign In
