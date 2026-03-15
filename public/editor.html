@@ -680,14 +680,22 @@
                     </select>
                 </div>
 
+                <!-- Base Map -->
+                <div class="section">
+                    <div class="section-title" data-i18n="layers.base_map">Base Map</div>
+                    <div class="checkbox-group">
+                        <label><input type="radio" name="basemap" value="" checked> <span data-i18n="layers.none">none</span></label>
+                        <label><input type="radio" name="basemap" value="relief"> <span data-i18n="layers.relief">relief</span></label>
+                        <label><input type="radio" name="basemap" value="reliefgrey"> <span data-i18n="layers.relief_greyscale">relief (greyscale)</span></label>
+                        <label><input type="radio" name="basemap" value="blueMarble"> <span data-i18n="layers.blue_marble">blue marble</span></label>
+                        <label><input type="radio" name="basemap" value="base"> <span data-i18n="layers.base">base</span></label>
+                    </div>
+                </div>
+
                 <!-- Layers -->
                 <div class="section">
                     <div class="section-title" data-i18n="layers.title">Layers</div>
                     <div class="checkbox-group">
-                        <label><input type="checkbox" name="layers" value="relief"> <span data-i18n="layers.relief">relief</span></label>
-                        <label><input type="checkbox" name="layers" value="reliefgrey"> <span data-i18n="layers.relief_greyscale">relief (greyscale)</span></label>
-                        <label><input type="checkbox" name="layers" value="blueMarble"> <span data-i18n="layers.blue_marble">blue marble</span></label>
-                        <label><input type="checkbox" name="layers" value="base"> <span data-i18n="layers.base">base</span></label>
                         <label><input type="checkbox" name="layers" value="countries" checked> <span data-i18n="layers.countries">countries</span></label>
                         <label><input type="checkbox" name="layers" value="stateprovinces"> <span data-i18n="layers.states_provinces">states/provinces</span></label>
                         <label><input type="checkbox" name="layers" value="lakes"> <span data-i18n="layers.lakes">lakes</span></label>
@@ -1134,8 +1142,10 @@
                 });
             });
 
-            // Collect layers
+            // Collect layers — base map radio first, then layer checkboxes
             const layers = [];
+            const basemap = document.querySelector('input[name="basemap"]:checked')?.value;
+            if (basemap) layers.push(basemap);
             document.querySelectorAll('input[name="layers"]:checked').forEach(cb => {
                 layers.push(cb.value);
             });
@@ -1672,6 +1682,7 @@
             document.getElementById('width').value = '900';
             document.getElementById('height').value = '450';
 
+            document.querySelector('input[name="basemap"][value=""]').checked = true;
             document.querySelectorAll('input[name="layers"]').forEach(cb => {
                 cb.checked = cb.value === 'countries';
             });

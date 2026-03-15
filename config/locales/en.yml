@@ -95,6 +95,8 @@ en:
   # Layers
   layers:
     title: Layers
+    base_map: Base Map
+    none: none
     base: base
     countries: countries
     states_provinces: states/provinces
