@@ -82,30 +82,18 @@ bash scripts/download-naturalearth.sh ./mapserver/maps
 
 ### Optional proprietary map layers
 
-These layers require manual download due to licensing terms. Without them
-the layers will simply not appear in the editor, but the app works fine.
+Run the external data script, which automatically downloads what it can
+and prints instructions for anything requiring manual download:
 
-**Biodiversity Hotspots (Conservation International)**
-
-Download `hotspots_2016_1` shapefile from Conservation International and
-place the files in:
-```
-mapserver/maps/conservation_international/hotspots_2016_1.shp  (+ .dbf .shx .prj)
+```bash
+bash scripts/download-external-data.sh ./mapserver/maps
 ```
 
-**Terrestrial Ecoregions (WWF)**
+This will:
+- **Auto-download** the Conservation International Biodiversity Hotspots from Zenodo (CC-BY-SA 4.0)
+- **Print instructions** for the two WWF datasets (terrestrial and marine ecoregions), which require visiting the WWF website to agree to their terms before downloading
 
-Download `wwf_terr_ecos` shapefile from WWF and place the files in:
-```
-mapserver/maps/wwf_terr_ecos/wwf_terr_ecos.shp  (+ .dbf .shx .prj)
-```
-
-**Marine Ecoregions (WWF / MEOW)**
-
-Download `meow_ecos` shapefile from the MEOW project and place the files in:
-```
-mapserver/maps/wwf_meow/meow_ecos.shp  (+ .dbf .shx .prj)
-```
+Without these layers the app works fine — they simply won't appear in the editor.
 
 ## Step 5: Launch Services
 
