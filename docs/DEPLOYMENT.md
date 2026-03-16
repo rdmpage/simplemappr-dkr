@@ -71,13 +71,40 @@ cp .env.example .env
 nano .env
 ```
 
-## Step 4: Download Natural Earth Data
+## Step 4: Download Map Data
 
-The map shapefiles need to be downloaded before starting:
+### Natural Earth Data (required)
 
 ```bash
-# Download Natural Earth shapefiles (~150 MB)
+mkdir -p mapserver/maps
 bash scripts/download-naturalearth.sh ./mapserver/maps
+```
+
+### Optional proprietary map layers
+
+These layers require manual download due to licensing terms. Without them
+the layers will simply not appear in the editor, but the app works fine.
+
+**Biodiversity Hotspots (Conservation International)**
+
+Download `hotspots_2016_1` shapefile from Conservation International and
+place the files in:
+```
+mapserver/maps/conservation_international/hotspots_2016_1.shp  (+ .dbf .shx .prj)
+```
+
+**Terrestrial Ecoregions (WWF)**
+
+Download `wwf_terr_ecos` shapefile from WWF and place the files in:
+```
+mapserver/maps/wwf_terr_ecos/wwf_terr_ecos.shp  (+ .dbf .shx .prj)
+```
+
+**Marine Ecoregions (WWF / MEOW)**
+
+Download `meow_ecos` shapefile from the MEOW project and place the files in:
+```
+mapserver/maps/wwf_meow/meow_ecos.shp  (+ .dbf .shx .prj)
 ```
 
 ## Step 5: Launch Services
@@ -189,9 +216,14 @@ docker compose down
 
 ### Update to latest version
 ```bash
-git pull
-docker compose build
+git pull origin main
+
+# Rebuild render container (re-downloads any new shapefiles)
+docker compose build --no-cache render
 docker compose up -d
+
+# Regenerate projection thumbnails
+bash scripts/generate-projection-thumbnails.sh
 ```
 
 ### View resource usage
