@@ -8,7 +8,7 @@ fr:
 
   # General/Common
   general:
-    app_name: SimpleMappr Dkr
+    app_name: SimpleMappr.cloud
     tagline: Créez gratuitement des cartes de répartition pour publications et présentations
     keywords: publication,présentation,carte,géoréférencer
     sign_in: Connecter

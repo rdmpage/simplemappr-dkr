@@ -1,4 +1,4 @@
-# SimpleMappr Dkr
+# SimpleMappr.cloud
 
 A Docker-based port of [SimpleMappr](https://github.com/dshorthouse/SimpleMappr), a web application for creating publication-quality point maps. Enter geographic coordinates, choose map layers and styles, then preview and download your map.
 
