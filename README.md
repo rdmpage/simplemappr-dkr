@@ -1,5 +1,7 @@
 # SimpleMappr.cloud
 
+[![DOI](https://zenodo.org/badge/1178665330.svg)](https://doi.org/10.5281/zenodo.19226225)
+
 A Docker-based port of [SimpleMappr](https://github.com/dshorthouse/SimpleMappr), a web application for creating publication-quality point maps. Enter geographic coordinates, choose map layers and styles, then preview and download your map.
 
 ## Quick Start
