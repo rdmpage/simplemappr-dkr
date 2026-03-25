@@ -1,0 +1,9 @@
+{
+    "name": "simplemappr/render",
+    "description": "SimpleMappr render service",
+    "type": "project",
+    "require-dev": {
+        "phpunit/phpunit": "^9"
+    },
+    "require": {}
+}

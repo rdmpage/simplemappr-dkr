@@ -72,7 +72,7 @@ docker-compose.local.yml
 # =============================================================================
 /coverage/
 .phpunit.result.cache
-phpunit.xml
+/phpunit.xml
 
 # =============================================================================
 # Backups
@@ -80,3 +80,4 @@ phpunit.xml
 /backups/
 *.backup
 *.bak
+/render/vendor/
