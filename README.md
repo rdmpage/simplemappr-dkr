@@ -1,106 +1,109 @@
-# SimpleMappr Docker
+# SimpleMappr Dkr
 
-A Docker-based deployment of [SimpleMappr](https://github.com/dshorthouse/SimpleMappr), a point map web application for quality publications and presentations.
-
-## Features
-
-Priorities discussed with David Shorthouse, the original developer, ordered from most to least important:
-
-1. **Raster-based shaded relief** — support for [Natural Earth cross-blend hypsometry](https://www.naturalearthdata.com/downloads/10m-raster-data/10m-cross-blend-hypso/), used in the majority of SimpleMappr outputs
-2. **Zoom, pan, and crop** — essential for raster layers, where output resolution is otherwise too poor for publication
-3. **Point layers** — coordinate-based markers, the core use case
-4. **Map storage and user authentication** — saves layers and settings between sessions; deferred to a later version
-5. **Region and shape drawing layers** — relatively little use compared to points
-6. **API** — used by integrators such as Tropicos and Yale; not a priority for initial release
-7. **Word and PowerPoint export** — low priority
+A Docker-based port of [SimpleMappr](https://github.com/dshorthouse/SimpleMappr), a web application for creating publication-quality point maps. Enter geographic coordinates, choose map layers and styles, then preview and download your map.
 
 ## Quick Start
 
 ### Prerequisites
 
 - Docker and Docker Compose
-- ~2GB disk space for Natural Earth shapefiles
+- ~500MB disk space for map shapefiles
 
-### 1. Clone and Setup
+### 1. Clone and configure
 
 ```bash
+git clone https://github.com/rdmpage/simplemappr-dkr.git
 cd simplemappr-dkr
-
-# Copy environment file
 cp .env.example .env
 ```
 
-### 2. Download Shapefiles
+### 2. Download map data
 
 ```bash
-./scripts/download-shapefiles.sh
+mkdir -p mapserver/maps
+bash scripts/download-naturalearth.sh ./mapserver/maps
+
+# Optional: biodiversity hotspots and WWF ecoregion layers
+bash scripts/download-external-data.sh ./mapserver/maps
 ```
 
-This downloads Natural Earth data (~500MB) required for map rendering.
-
-### 3. Build and Run
+### 3. Build and start
 
 ```bash
-docker-compose build
-docker-compose up
+docker compose up -d
 ```
 
 The application will be available at http://localhost:8080
 
-### 4. Verify Installation
+### 4. Generate projection thumbnails
 
-- Open http://localhost:8080 - should show the map editor
-- Open http://localhost:8080/health - should show service status
-- Open http://localhost:8080/status - should show map data availability
+```bash
+bash scripts/generate-projection-thumbnails.sh
+```
 
 ## Configuration
 
-### Environment Variables
-
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `ENVIRONMENT` | development/production | development |
-| `APP_URL` | Public URL of application | http://localhost:8080 |
-| `APP_SECRET` | Session encryption key | (change in production) |
+| `ENVIRONMENT` | `development` or `production` | `development` |
+| `APP_PORT` | Port to expose the application on | `8080` |
 
-## Development
+For production (e.g. port 80), set `APP_PORT=80` in `.env`.
 
-### Live Reload
+## Testing
 
-The development configuration (`docker-compose.override.yml`) mounts source code into the container for live editing.
+The test suite has three layers. The render service must be running for the API and visual tests.
+
+### Unit tests
+
+Tests render service logic (projections, layers, mapfile generation) with no Docker dependency:
 
 ```bash
-# Start in development mode (default)
-docker-compose up
-
-# Rebuild after Dockerfile changes
-docker-compose build
-docker-compose up
+cd render && vendor/bin/phpunit --testdox
 ```
 
-### Logs
+### API tests
+
+Tests HTTP status codes, image dimensions, all projections, output formats, and error handling:
 
 ```bash
-# All services
-docker-compose logs -f
+bash tests/api-test.sh
 
-# Specific service
-docker-compose logs -f app
-docker-compose logs -f render
+# Against a remote server:
+RENDER_URL=http://your-server/render bash tests/api-test.sh
 ```
 
-### Database Access
+### Visual regression tests
+
+Renders known configurations and compares against stored reference images using a pixel-difference threshold. Covers the projections that previously had rendering artifacts (horizontal lines in Lambert projections, blank South Pole):
 
 ```bash
-# Open SQLite CLI
-docker-compose exec app sqlite3 /var/lib/simplemappr/simplemappr.db
+bash tests/visual/visual-test.sh
+```
+
+If a test fails, a diff image is saved to `tests/visual/diffs/` for inspection.
+
+To update the reference images after an intentional rendering change:
+
+```bash
+bash tests/visual/generate-references.sh
+git add tests/visual/reference/ && git commit -m "Update visual regression references"
+```
+
+## Updating
+
+```bash
+git pull origin main
+docker compose build --no-cache render
+docker compose up -d
+bash scripts/generate-projection-thumbnails.sh
 ```
 
 ## Documentation
 
-- [Architecture](docs/ARCHITECTURE.md) — System design and container overview
-- [Deployment](docs/DEPLOYMENT.md) — Production deployment guide
+- [Deployment guide](docs/DEPLOYMENT.md) — full production setup including Hetzner, HTTPS, and firewall
+- [Architecture](docs/ARCHITECTURE.md) — system design and container overview
 
 ## License
 
-MIT License - see LICENSE file for details.
+MIT License — see LICENSE file for details.
