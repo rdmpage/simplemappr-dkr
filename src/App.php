@@ -138,7 +138,7 @@ class App
             );
 
             // Insert before </head>
-            $html = str_replace('</head>', $i18nScript . "\n</head>", $html);
+            $html = str_replace('</head>', $i18nScript . "\n" . $this->getAnalyticsSnippet() . "</head>", $html);
 
             echo $html;
         } else {
@@ -264,8 +264,58 @@ class App
         if (isset($_GET['partial'])) {
             echo $this->buildStatusBodyHtml($t, $health, $mapSources);
         } else {
-            echo $this->getStatusHtml($t, $locale, $health, $mapSources, $renderMapsPath);
+            $html = $this->getStatusHtml($t, $locale, $health, $mapSources, $renderMapsPath);
+            echo str_replace('</head>', $this->getAnalyticsSnippet() . "</head>", $html);
         }
+    }
+
+    /**
+     * Analytics snippets (Google Tag Manager and/or GA4), or an empty string
+     * if neither GTM_CONTAINER_ID nor GA_MEASUREMENT_ID is configured.
+     * Pages must not assume gtag() or dataLayer exist.
+     */
+    private function getAnalyticsSnippet(): string
+    {
+        return $this->getGtmSnippet() . $this->getGaSnippet();
+    }
+
+    private function getGtmSnippet(): string
+    {
+        if (GTM_CONTAINER_ID === '') {
+            return '';
+        }
+
+        $idJson = json_encode(GTM_CONTAINER_ID);
+
+        return <<<HTML
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer',{$idJson});</script>
+
+HTML;
+    }
+
+    private function getGaSnippet(): string
+    {
+        if (GA_MEASUREMENT_ID === '') {
+            return '';
+        }
+
+        $id = htmlspecialchars(GA_MEASUREMENT_ID, ENT_QUOTES);
+        $idJson = json_encode(GA_MEASUREMENT_ID);
+
+        return <<<HTML
+<script async src="https://www.googletagmanager.com/gtag/js?id={$id}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', {$idJson});
+</script>
+
+HTML;
     }
 
     /**

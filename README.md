@@ -49,6 +49,8 @@ bash scripts/generate-projection-thumbnails.sh
 |----------|-------------|---------|
 | `ENVIRONMENT` | `development` or `production` | `development` |
 | `APP_PORT` | Port to expose the application on | `8080` |
+| `GA_MEASUREMENT_ID` | Google Analytics 4 ID (e.g. `G-XXXXXXXXXX`). Optional; leave empty to disable analytics. Map downloads are sent as `file_download` events. | _(empty)_ |
+| `GTM_CONTAINER_ID` | Google Tag Manager container ID (e.g. `GTM-XXXXXXX`). Optional alternative to the above; map downloads are pushed to the `dataLayer` as a `file_download` event. | _(empty)_ |
 
 For production (e.g. port 80), set `APP_PORT=80` in `.env`.
 

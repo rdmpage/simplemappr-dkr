@@ -841,6 +841,19 @@
     </div>
 
     <script>
+        // Analytics: send an event only if GA4 (gtag) or Google Tag Manager
+        // is loaded. Both are optional (see GA_MEASUREMENT_ID / GTM_CONTAINER_ID);
+        // with neither configured this does nothing.
+        function trackEvent(name, params) {
+            try {
+                if (typeof window.gtag === 'function') {
+                    window.gtag('event', name, params || {});
+                } else if (Array.isArray(window.dataLayer)) {
+                    window.dataLayer.push(Object.assign({ event: name }, params || {}));
+                }
+            } catch (e) { /* never let analytics break the app */ }
+        }
+
         // Projection default extents (mirrors Projections.php) — used for crop bbox initialisation
         const PROJECTION_EXTENTS = {
             'epsg:4326':   [-180, -90, 180, 90],
@@ -1719,6 +1732,12 @@
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
+
+                trackEvent('file_download', {
+                    file_extension: format,
+                    file_name: a.download,
+                    projection: config.projection
+                });
 
                 hideStatus();
 

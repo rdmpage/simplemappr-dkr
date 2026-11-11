@@ -23,6 +23,16 @@ defined('RENDER_SERVICE_URL') || define('RENDER_SERVICE_URL',
 defined('DATABASE_PATH') || define('DATABASE_PATH',
     getenv('DATABASE_PATH') ?: ROOT . '/data/simplemappr.db');
 
+// Google Analytics 4 Measurement ID (e.g. G-XXXXXXXXXX). Optional:
+// leave unset/empty to disable analytics entirely.
+defined('GA_MEASUREMENT_ID') || define('GA_MEASUREMENT_ID',
+    preg_match('/^G-[A-Z0-9]+$/', (string) getenv('GA_MEASUREMENT_ID')) ? getenv('GA_MEASUREMENT_ID') : '');
+
+// Google Tag Manager container ID (e.g. GTM-XXXXXXX). Optional: leave
+// unset/empty to disable. Can be used instead of, or as well as, GA above.
+defined('GTM_CONTAINER_ID') || define('GTM_CONTAINER_ID',
+    preg_match('/^GTM-[A-Z0-9]+$/', (string) getenv('GTM_CONTAINER_ID')) ? getenv('GTM_CONTAINER_ID') : '');
+
 // Map defaults
 defined('DEFAULT_WIDTH') || define('DEFAULT_WIDTH', 900);
 defined('DEFAULT_HEIGHT') || define('DEFAULT_HEIGHT', 450);
